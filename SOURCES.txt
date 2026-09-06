@@ -1,0 +1,23 @@
+HDF4 sources
+============
+
+The HDF Group
+-------------
+https://support.hdfgroup.org/hdf4/
+https://support.hdfgroup.org/documentation/
+https://support.hdfgroup.org/releases/hdf4/documentation/HDF4_Users_Guide.pdf
+
+The HDF4 User's Guide is the useful low-level anchor for descriptor semantics. It describes tag/reference identity, 32-bit offset/length fields, and linked data-descriptor blocks.
+
+Format identification
+---------------------
+https://www.loc.gov/preservation/digital/formats/fdd/fdd000228.shtml
+
+The Library of Congress format description records the HDF4 magic bytes `0E 03 13 01` and distinguishes HDF4 from HDF5.
+
+Earth-observation relevance
+---------------------------
+https://www.hdfgroup.org/solutions/hdf4/
+https://wiki.earthdata.nasa.gov/spaces/DAS/pages/170801036/Library-Tools
+
+NASA/HDF-EOS material is important because HDF4 remains a live archival format for Earth-science products even though HDF4 itself is legacy/deprecated for new designs.

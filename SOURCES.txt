@@ -1,0 +1,19 @@
+JPEG 2000 / JP2 sources
+=======================
+
+Library of Congress format description
+--------------------------------------
+https://www.loc.gov/preservation/digital/formats/fdd/fdd000143.shtml
+
+Useful facts recorded there include the JP2 signature, box length/type structure, extended-length behavior, superboxes, and the distinction between the JP2 wrapper and the JPEG 2000 codestream.
+
+Sentinel-2 follower
+-------------------
+https://sentiwiki.copernicus.eu/web/s2-products
+https://sentiwiki.copernicus.eu/web/safe-format
+
+Sentinel-2 Level-1C and Level-2A SAFE products carry image data in JPEG 2000 files alongside XML metadata and XSD schemas. This makes Sentinel-2 a natural integration test joining XML/SAFE structure to JP2 imagery.
+
+Scope rule for the first parser
+-------------------------------
+Do not require full JPEG 2000 pixel decompression for the structural parser milestone. Treat JP2 box validation, image metadata and codestream location as independently useful acceptance work; compressed-image decoding can follow later.

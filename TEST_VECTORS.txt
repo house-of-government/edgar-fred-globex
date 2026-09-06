@@ -1,0 +1,62 @@
+CCSDS Space Packet structural test vectors
+==========================================
+
+These are small deterministic vectors for the generic CCSDS 133.0-B-2 framing layer. They do not claim any GOES-specific APID payload meaning.
+
+Vector A — one-byte telemetry packet
+------------------------------------
+Bytes:
+
+    00 01 C0 01 00 00 AA
+
+Expected primary header:
+- version = 0
+- packet type = 0 (telemetry/reporting)
+- secondary-header flag = 0
+- APID = 1
+- sequence flags = 3
+- sequence count/name bits = 1
+- encoded packet-data length = 0
+- actual packet-data length = 1 byte
+- payload slice = `AA`
+
+Total packet length = 7 bytes.
+
+Vector B — secondary-header flag set, five data bytes
+----------------------------------------------------
+Bytes:
+
+    08 2A 40 7B 00 04 01 02 03 04 05
+
+Expected primary header:
+- version = 0
+- packet type = 0
+- secondary-header flag = 1
+- APID = 42
+- sequence flags = 1
+- sequence count/name bits = 123
+- encoded packet-data length = 4
+- actual packet-data length = 5 bytes
+- bounded data-field slice = `01 02 03 04 05`
+
+The generic parser should NOT invent a boundary between secondary header and user data. That split needs the managed/mission-specific secondary-header definition.
+
+Vector C — declared payload is truncated
+----------------------------------------
+Bytes:
+
+    00 01 C0 01 00 04 AA BB
+
+The header declares 5 packet-data bytes (`4 + 1`) but only two follow. Expected result: structural failure before any payload value is returned.
+
+Vector D — unsupported packet version
+-------------------------------------
+Bytes:
+
+    20 01 C0 01 00 00 AA
+
+The top three version bits decode as binary `001`, not the `000` required by CCSDS 133.0-B-2. Expected result: reject/refuse refinement to the Space Packet type used by this parser.
+
+Acceptance property
+-------------------
+For every successful parse, the returned data-field slice length must equal `decoded_packet_data_length + 1`, and the slice must be wholly contained in the input region supplied to the packet parser.

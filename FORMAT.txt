@@ -1,0 +1,50 @@
+XBRL XML
+========
+
+Purpose
+-------
+XBRL instance documents are XML documents whose element QNames are financial/reporting concepts and whose attributes connect facts to contexts, units, accuracy and taxonomy/linkbase metadata. This branch is a real-world parser follower for both exact-search and structured XML work.
+
+Core structures
+---------------
+- `<xbrl>` instance root with many namespace declarations.
+- `link:schemaRef` and sometimes `link:linkbaseRef` references.
+- facts such as `<us-gaap:NetIncomeLoss ...>...</us-gaap:NetIncomeLoss>`.
+- `contextRef` on facts points to a `<context id=...>`.
+- contexts contain entity identifiers and either an instant or start/end duration.
+- dimensional contexts can contain `xbrldi:explicitMember` or typed dimensions.
+- `unitRef` points to `<unit>` definitions such as ISO currency, shares, pure ratios, or divided units.
+- numeric facts commonly carry `decimals` or older precision information.
+- company/taxonomy-specific namespaces coexist with standard DEI/US-GAAP namespaces.
+- text-block facts can contain large escaped XHTML payloads.
+
+Parser pressure points
+----------------------
+- namespace/QName resolution rather than comparing only raw local names;
+- many attributes per fact;
+- forward/back references by XML IDs (`contextRef`, `unitRef`);
+- instant versus duration contexts;
+- repeated facts for different contexts;
+- dimensions represented as nested segment/scenario members;
+- decimals, signs, ratios and large integers;
+- very long text nodes containing escaped markup;
+- link/schema references that should not require network access for basic instance parsing;
+- real filings can be large enough that streaming/selected-field parsing matters.
+
+Related form
+------------
+Inline XBRL (iXBRL) embeds XBRL facts inside XHTML using the `ix:` namespace. It is related but should be treated as a distinct HTML/XHTML+XBRL parser lane when promoted.
+
+Samples
+-------
+`sample-small.xml`: a public-domain Hello World instance with two contexts, one USD unit, linkbase refs and several monetary facts.
+`sample-complex.xml`: a deliberately reduced, self-contained specimen from a public-domain comprehensive example, retaining dimensional contexts, instant/duration contexts, multiple units and several facts. `SOURCES.txt` links the full upstream comprehensive instance for larger stress work.
+
+First useful checks
+-------------------
+1. fixed search for a concept QName;
+2. tokenize namespaces/elements/attributes/text;
+3. resolve one fact's contextRef and unitRef;
+4. distinguish instant from duration;
+5. walk one dimensional context;
+6. later ingest a real SEC instance and compare selected facts.

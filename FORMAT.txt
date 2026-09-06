@@ -1,0 +1,45 @@
+NOAA / NATIONAL WEATHER SERVICE OBSERVATION XML
+================================================
+
+Purpose
+-------
+This branch keeps small, recognizable government XML observations as parser followers while Idriç/ARM control-flow work evolves.
+
+Typical document shape
+----------------------
+- XML declaration, historically sometimes ISO-8859-1
+- optional xml-stylesheet processing instruction
+- current_observation root
+- XSD/XSI namespace attributes and noNamespaceSchemaLocation
+- nested image metadata
+- scalar text fields for station/location/time
+- numeric fields repeated in multiple units
+- weather/wind strings plus normalized numeric fields
+- optional or absent meteorological observations
+- many URL-valued fields
+
+Interesting parser cases
+------------------------
+- CRLF mixed with LF
+- processing instructions before the root
+- namespace-qualified attributes even when element names are simple
+- optional fields: some stations have humidity/dewpoint/weather, some do not
+- signed decimal values
+- timestamps in prose and RFC822 form
+- paired human-readable and machine-readable values
+- field order that is stable enough for fixtures but should not be treated as semantic schema order
+
+Samples
+-------
+sample-small.xml: station 0Y2W3. Smaller shape with water temperature and several absent weather/humidity/dewpoint fields.
+sample-complex.xml: KARB, Ann Arbor Municipal Airport. More fields: weather, relative humidity, wind gusts, pressure, dewpoint, windchill, visibility and links.
+
+Useful progression
+------------------
+1. fixed-string search for station_id or temp_c
+2. XML tokenization
+3. select one named field
+4. distinguish missing from present-empty
+5. parse numeric values after structural parsing exists
+
+Network retrieval belongs to ICU. Compiler correctness consumes frozen sample bytes.

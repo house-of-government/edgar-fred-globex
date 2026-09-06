@@ -1,0 +1,29 @@
+MODIS / HDF-EOS2 sources
+========================
+
+MODIS Level-1B product summary
+------------------------------
+https://modis.gsfc.nasa.gov/data/dataprod/pdf/MOD_02.pdf
+
+This is a compact official description of the calibrated/geolocated radiance product and its multiple spatial resolutions/bands.
+
+NASA HDF-EOS background
+-----------------------
+https://wiki.earthdata.nasa.gov/spaces/DAS/pages/170801036/Library-Tools
+https://wiki.earthdata.nasa.gov/spaces/DAS/pages/170801032/SDP%2BToolkit%2Band%2BHDF-EOS%2BEOSDIS%2BCore%2BSystem%2BProject
+
+MODIS/HDF4 clarification and packed-data example
+------------------------------------------------
+https://www.earthdata.nasa.gov/s3fs-public/imported/MODIS_C6_Fire_User_Guide_A.pdf
+
+The MODIS fire guide includes a useful explicit warning that HDF4 and HDF5 are incompatible formats and discusses HDF packed-data scaling. Product-specific scaling rules must still be taken from the product's own attributes/specification rather than generalized blindly.
+
+HDF-EOS conversion context
+--------------------------
+https://wiki.earthdata.nasa.gov/spaces/DAS/pages/170800220/HEG%2BHDF-EOS%2Bto%2BGeoTIFF%2BConversion%2BTool
+
+HEG's existence is itself useful evidence for the interface problem: NASA supplies tooling to subset/reproject/reformat HDF-EOS objects into more ordinary GIS forms such as GeoTIFF.
+
+Fixture direction
+-----------------
+Prefer a small real MODIS granule/product whose metadata can be inventoried without retaining hundreds of megabytes in this staging repository. Preserve exact product identity, source, checksum, selected dataset names and a deterministic byte/slice range for parser tests.

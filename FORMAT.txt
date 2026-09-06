@@ -1,0 +1,42 @@
+FASTA
+=====
+
+Purpose
+-------
+FASTA is the intentionally simple biological text lane. It is useful both as a parser fixture and as a fixed-string-search workload because sequence data is mostly long runs of A/C/G/T (or protein/IUPAC symbols) separated by short record headers.
+
+Core grammar
+------------
+- A record begins with `>` at the beginning of a line.
+- The rest of that line is the record title/description.
+- One or more following lines contain sequence symbols until the next `>` record header or end of file.
+- Sequence lines are commonly wrapped but wrapping is not semantically meaningful.
+- Files may contain one or many records.
+
+Common real-world complications
+-------------------------------
+- identifiers plus free-form descriptions in headers;
+- duplicate identifiers;
+- CRLF versus LF line endings;
+- arbitrarily wrapped versus unwrapped sequence lines;
+- nucleotide, RNA, protein and ambiguous IUPAC alphabets;
+- long records where fixed motif search should not require building a whole syntax tree;
+- record-boundary policy: a motif must not silently match across two distinct records.
+
+Parser/search questions
+-----------------------
+- detect headers only at line boundaries;
+- distinguish header bytes from sequence bytes;
+- skip line breaks during sequence assembly/search if the search semantics say wrapped sequence is continuous;
+- preserve record boundaries;
+- permit exact fixed-string scanning over sequence data without accidentally scanning descriptions unless requested;
+- decide explicitly whether lower/upper case is significant.
+
+Samples
+-------
+`sample-small.fasta`: three short DNA reads.
+`sample-complex.fasta`: one substantially longer wrapped nucleotide record with a rich identifier/description and CRLF-origin source.
+
+Useful first acceptance
+-----------------------
+Search a literal DNA motif in `sample-small.fasta`, report exact record and sequence offset, then prove no match can cross a `>` record boundary.

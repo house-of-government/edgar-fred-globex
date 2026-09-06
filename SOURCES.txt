@@ -1,0 +1,22 @@
+netCDF sources
+==============
+
+Primary format/project documentation
+------------------------------------
+https://docs.unidata.ucar.edu/netcdf-c/current/file_format_specifications.html
+https://docs.unidata.ucar.edu/netcdf-c/current/netcdf_data_model.html
+https://docs.unidata.ucar.edu/netcdf-c/current/file_format_specifications.html#netcdf-4-file-format
+
+Underlying netCDF-4 storage
+---------------------------
+https://portal.hdfgroup.org/documentation/hdf5/latest/_h5_d_m__u_g.html
+
+Earth-observation follower: GOES-R
+---------------------------------
+https://www.ospo.noaa.gov/resources/documents/goes-r.html
+https://goes-r.noaa.gov/downloads/resources/documents/Beginners_Guide_to_GOES-R_Series_Data.pdf
+https://goes-r.noaa.gov/products/data/ABI-L1b-ContFullDisk.html
+
+Notes
+-----
+NOAA's GOES-R beginner guide documents Level 1b/2+ products as netCDF-4 and calls out dimensions plus attributes such as `_FillValue`, `valid_range`, `scale_factor`, `add_offset`, and `units`. This makes GOES a good follow-on after a structural netCDF reader: the parser has to distinguish representation values from physical values and preserve missing/invalid states.

@@ -1,0 +1,40 @@
+{
+  "type": "FeatureCollection",
+  "name": "Earthquakes_3857_selected",
+  "crs": {"type":"name","properties":{"name":"urn:ogc:def:crs:EPSG::3857"}},
+  "features": [
+    {
+      "type":"Feature",
+      "properties": {
+        "id":"us6000j7uj","mag":5.5,"place":"9 km E of Tsurib, Russia","time":1670481729294,"updated":1670494205564,"tz":null,
+        "url":"https://earthquake.usgs.gov/earthquakes/eventpage/us6000j7uj","detail":"https://earthquake.usgs.gov/earthquakes/feed/v1.0/detail/us6000j7uj.geojson",
+        "felt":10,"cdi":4.8,"mmi":6.646,"alert":"yellow","status":"reviewed","tsunami":0,"sig":655,"net":"us","code":"6000j7uj",
+        "ids":",us6000j7uj,","sources":",us,","types":",dyfi,ground-failure,losspager,moment-tensor,origin,phase-data,shakemap,",
+        "nst":113,"dmin":7.09,"rms":0.85,"gap":28,"magType":"mww","type":"earthquake","title":"M 5.5 - 9 km E of Tsurib, Russia"
+      },
+      "geometry":{"type":"Point","coordinates":[5225448.217327055,5198426.914397228,10.0]}
+    },
+    {
+      "type":"Feature",
+      "properties": {
+        "id":"nc73814941","mag":3.59,"place":"13km ESE of Alum Rock, CA","time":1670281996710,"updated":1670487791736,"tz":null,
+        "url":"https://earthquake.usgs.gov/earthquakes/eventpage/nc73814941","detail":"https://earthquake.usgs.gov/earthquakes/feed/v1.0/detail/nc73814941.geojson",
+        "felt":1256,"cdi":4.1,"mmi":3.56,"alert":null,"status":"reviewed","tsunami":0,"sig":608,"net":"nc","code":"73814941",
+        "ids":",nc73814941,nn00852661,us6000j75u,","sources":",nc,nn,us,","types":",dyfi,focal-mechanism,moment-tensor,nearby-cities,origin,phase-data,scitech-link,shakemap,",
+        "nst":205,"dmin":0.0252,"rms":0.12,"gap":26,"magType":"mw","type":"earthquake","title":"M 3.6 - 13km ESE of Alum Rock, CA"
+      },
+      "geometry":{"type":"Point","coordinates":[-13546209.092865594,4484621.586312372,8.21]}
+    },
+    {
+      "type":"Feature",
+      "properties": {
+        "id":"us6000j6w8","mag":6.7,"place":"Samoa Islands region","time":1670181855254,"updated":1670271262040,"tz":null,
+        "url":"https://earthquake.usgs.gov/earthquakes/eventpage/us6000j6w8","detail":"https://earthquake.usgs.gov/earthquakes/feed/v1.0/detail/us6000j6w8.geojson",
+        "felt":19,"cdi":4.6,"mmi":4.834,"alert":"green","status":"reviewed","tsunami":1,"sig":699,"net":"us","code":"6000j6w8",
+        "ids":",pt22338001,at00rmdskr,us6000j6w8,","sources":",pt,at,us,","types":",dyfi,ground-failure,impact-link,losspager,moment-tensor,origin,phase-data,shakemap,",
+        "nst":58,"dmin":2.591,"rms":1.16,"gap":45,"magType":"mww","type":"earthquake","title":"M 6.7 - Samoa Islands region"
+      },
+      "geometry":{"type":"Point","coordinates":[-19254709.68353094,-1735145.9624887703,35.999]}
+    }
+  ]
+}

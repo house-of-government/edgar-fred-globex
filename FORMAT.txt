@@ -1,0 +1,49 @@
+FBI CRIME DATA EXPLORER JSON
+============================
+
+Purpose
+-------
+This branch keeps frozen FBI Crime Data Explorer (CDE) response shapes as parser followers. The value here is not only JSON syntax: CDE returns wide, deeply nested category/time-series maps whose keys are partly data rather than a fixed schema.
+
+Important response families
+---------------------------
+Summary/UCR-style responses can contain:
+- `offenses.rates`
+- `offenses.actuals`
+- `tooltips`
+- `populations.population`
+- `populations.participated_population`
+- `cde_properties.max_data_date`
+- `cde_properties.last_refresh_date`
+
+NIBRS aggregate responses can instead organize totals by semantic dimensions such as:
+- victim age / sex / race / ethnicity / location / relationship
+- offender age / sex / race / ethnicity
+- weapon categories
+- related offenses
+- CDE refresh/completeness metadata
+
+Parser pressure points
+----------------------
+- nested JSON objects whose keys are display/category names;
+- month strings such as `01-2020` used as object keys;
+- integer and floating values mixed by semantic field;
+- many zero counts;
+- punctuation/spaces/slashes inside category keys;
+- potentially huge categorical objects;
+- metadata beside payload data;
+- data completeness/participation fields that must not be confused with crime counts;
+- endpoint families do not all share one response schema.
+
+Samples
+-------
+`sample-small.json`: New York monthly summary response with rates, actuals, population, participation coverage and CDE metadata.
+`sample-complex.json`: NIBRS totals response with large categorical maps for victims, offenders, weapons, locations, relationships and related offenses.
+
+Useful first checks
+-------------------
+1. fixed-string search for `offenses`, `actuals`, or a category name;
+2. tokenize JSON punctuation/string/number/literal states;
+3. traverse to one month or category count;
+4. preserve distinction between absent, null and numeric zero when encountered;
+5. later test streaming/selected-field parsing on much larger agency/download payloads.

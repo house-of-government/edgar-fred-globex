@@ -1,0 +1,77 @@
+SEC FORM D XML
+==============
+
+Purpose
+-------
+This branch is a real-world XML parser lane for SEC exempt-offering filings. It is fixture/reference material; canonical parser semantics belong in isomorphisms/Idric#73 and ARM-specific consequences belong in isomorphisms/idric-arm-thumb#48.
+
+Basic shape
+-----------
+Root: edgarSubmission
+
+Common top-level children include:
+- schemaVersion
+- submissionType (D or D/A)
+- testOrLive
+- primaryIssuer
+- issuerList
+- relatedPersonsList
+- offeringData
+
+Important nested families
+-------------------------
+primaryIssuer / issuer:
+- CIK
+- entity name
+- nested postal address
+- phone
+- jurisdiction
+- previous-name lists
+- entity type
+- year-of-incorporation alternatives
+
+relatedPersonsList:
+- repeated relatedPersonInfo records
+- nested names/addresses
+- repeated relationship elements
+- optional clarification text
+
+offeringData:
+- industry classification
+- investment-fund subtype
+- issuer size/revenue range
+- repeated federal exemption codes
+- new-vs-amendment structure
+- first-sale date
+- offering duration
+- multiple security-type flags
+- business-combination flags/clarifications
+- minimum investment
+- repeated sales-compensation recipients
+- offering/sold/remaining amounts
+- investor counts and accredited/non-accredited flags
+- commissions/finder fees
+- use-of-proceeds amounts/estimates/clarifications
+- repeated signatures
+
+Parser pressure points
+----------------------
+- nested repeated elements
+- empty elements versus absent elements
+- D versus D/A shape differences
+- boolean text values
+- dates and decimal/integer amounts
+- XML entities such as &amp;
+- optional second address lines / middle names / clarifications
+- lists represented as repeated sibling elements rather than arrays
+- sparse branches whose presence depends on issuer/offering type
+
+Useful progression
+------------------
+1. fixed-string search for primaryIssuer, offeringData, totalAmountSold
+2. tokenize XML structural bytes
+3. parse element/attribute/text events
+4. bounded traversal to selected fields
+5. compare D versus D/A and simple versus compensation-heavy filings
+
+Do not make full SEC schema validation, network retrieval, or function-call ABI work prerequisites for the current ARM branch/control-flow experiments.

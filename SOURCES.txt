@@ -1,0 +1,28 @@
+Landsat Collection 2 sources
+============================
+
+USGS Collection 2 Level-1
+-------------------------
+https://www.usgs.gov/landsat-missions/landsat-collection-2-level-1-data
+
+USGS lists the Level-1 product components, including COG spectral bands, angle information, QA files, MTL/ODL metadata and XML metadata. It also documents the unsigned 16-bit stored digital numbers and metadata scaling used for top-of-atmosphere radiance/reflectance.
+
+USGS Collection 2 overview
+--------------------------
+https://www.usgs.gov/landsat-missions/landsat-collection-2
+
+Useful for the COG transition, consistent QA bands and the addition/role of Collection 2 XML metadata.
+
+USGS STAC
+---------
+https://www.usgs.gov/landsat-missions/spatiotemporal-asset-catalog-stac
+
+The Landsat STAC interface is useful as the discovery/catalog layer: JSON items identify assets and can lead into the actual COG/metadata files.
+
+Existing parser follower
+------------------------
+Use the repository's `geotiff` branch for TIFF/GeoTIFF structural mechanics. Landsat-specific code should sit above it rather than reproducing TIFF parsing.
+
+Fixture direction
+-----------------
+A strong compact fixture set is one STAC item + its small MTL/XML metadata + selected headers/tile metadata from one COG + one small QA/data window, with exact scene ID and checksums. Large scene rasters do not need to live in this staging repository.

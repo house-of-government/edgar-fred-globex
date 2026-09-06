@@ -1,0 +1,28 @@
+FASTA SOURCES
+=============
+
+Format/reference documentation
+------------------------------
+NCBI BLAST FASTA sequence input documentation:
+https://blast.ncbi.nlm.nih.gov/doc/blast-topics/
+
+NCBI nucleotide/IUPAC sequence conventions are useful when expanding beyond the A/C/G/T canary; link current NCBI documentation rather than mirroring manuals here.
+
+Sample corpus
+-------------
+Biopython test data, repository `biopython/biopython` (Biopython is distributed under the Biopython License/BSD-style terms).
+
+sample-small.fasta
+  Source: Tests/Quality/example.fasta
+  Source blob SHA: ec265d6acbf81b7968290d50d750dd3f8b813721
+  Three short DNA records; ideal fixed-search canary.
+
+sample-complex.fasta
+  Source: Tests/Fasta/elderberry.nu
+  Source blob SHA: 0796787bdcb874b416b8ce2ccb474660ac819ddf
+  Sambucus nigra nucleotide record with a rich identifier and many wrapped sequence lines.
+
+Upstream repository:
+https://github.com/biopython/biopython
+
+These branch samples are frozen parser specimens; they are not intended as biological reference datasets.

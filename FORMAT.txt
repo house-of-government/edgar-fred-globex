@@ -1,0 +1,78 @@
+GOES-R
+======
+
+Purpose
+-------
+GOES-R gives two unusually good parser targets in one public satellite family:
+
+1. Level 1b / Level 2+ products: ordinary scientific products in netCDF-4 with packed arrays, metadata, quality information and satellite-grid navigation.
+2. Level 0 products: netCDF-4 files whose payload contains raw CCSDS packets as byte arrays, so a successful netCDF parse still leaves another binary protocol to decode.
+
+Level 1b / Level 2+ path
+------------------------
+NOAA documents GOES-R product files as netCDF-4. Useful semantics include:
+- dimensions and variables;
+- global and variable attributes;
+- `_FillValue`;
+- `valid_range`;
+- `scale_factor` and `add_offset`;
+- units and descriptive names;
+- data-quality flags;
+- fixed-grid geostationary navigation/projection information.
+
+For ABI Level 1b, imagery is organized by spectral channel/band. NOAA publishes sample ABI Level 1b netCDF files, making this a practical early real-data target.
+
+A parser should separate:
+
+    netCDF stored value
+       -> missing/range checks
+       -> scale/offset unpacking
+       -> physical value
+       -> geostationary-grid coordinate interpretation
+
+Level 0 path
+------------
+NOAA's archived GOES-R Level 0 products are even more interesting. For ABI and several other instruments, the Level 0 file is netCDF-4 but the instrument/spacecraft CCSDS packets are stored as byte arrays. NOAA explicitly notes that this makes the packet data opaque to ordinary netCDF readers.
+
+That yields a layered parser:
+
+    netCDF-4 / HDF5
+       -> byte-array variable
+       -> CCSDS packet framing
+       -> CCSDS primary header
+       -> APID dispatch
+       -> GOES instrument-specific packet payload
+
+Each layer can succeed while the next fails, which makes error and type boundaries unusually concrete.
+
+Parser pressure points
+----------------------
+- packed numbers must not be exposed as physical observations before attributes are applied;
+- fill and invalid values need explicit states;
+- geostationary projection parameters form a coherent coordinate model, not unrelated attributes;
+- dimensions and variable shapes should be validated before indexing;
+- Level 0 packet boundaries must be checked against the containing byte-array length;
+- APID is an 11-bit identifier and dispatch is mission/product specific;
+- CCSDS packet length uses its own encoded length rule and must not be guessed from the container;
+- secondary-header format is not universal CCSDS structure; it is mission/data-path specific;
+- malformed packet payload must not invalidate already-proven netCDF container facts.
+
+Typed-parser questions to preserve
+----------------------------------
+- Can a packed ABI sample be a different type from a calibrated sample?
+- Can missing/fill data be represented without sentinel numbers leaking into physical arithmetic?
+- Can validated x/y grid coordinates only be combined with the projection parameters belonging to that product?
+- Can a netCDF byte array become a packet stream only after every packet boundary is proven?
+- Can APID dispatch refine a generic CCSDS packet into a GOES-specific payload type?
+- Can the error value retain which layer failed: HDF5, netCDF, variable semantics, CCSDS framing, APID payload, or physical interpretation?
+
+Useful progression
+------------------
+1. parse metadata from one NOAA ABI Level 1b sample;
+2. decode one packed pixel and its validity state;
+3. apply scale/offset to produce one physical value;
+4. validate enough fixed-grid metadata to locate the pixel geometrically;
+5. separately open one Level 0 product and identify the packet byte array;
+6. enumerate CCSDS primary headers without interpreting instrument payloads;
+7. dispatch one APID;
+8. decode one small instrument-specific payload only after the packet layer is proven.

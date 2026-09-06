@@ -1,0 +1,35 @@
+FORM D XML SOURCES
+==================
+
+Official documentation
+----------------------
+SEC Form D XML technical specification:
+https://www.sec.gov/info/edgar/formdxmltechspec.htm
+
+SEC EDGAR technical specifications:
+https://www.sec.gov/submit-filings/technical-specifications
+
+SEC EDGAR filing archive/search:
+https://www.sec.gov/edgar/search/
+
+Samples mirrored on this branch
+-------------------------------
+sample-small.xml
+  Source copy: dgunning/edgartools, data/D.APFund.xml
+  Source commit: dbb008ed30d121c7095f11df4f6c488166dcf6b9
+  Source blob SHA: 3a53615d0fe32106af1de0c05f1aac1f1eb69fc0
+  Filing shape: Form D, pooled investment fund, two issuers, related persons, offering amounts and repeated signatures.
+
+sample-complex.xml
+  Source copy: dgunning/edgartools, data/D.Shepards.xml
+  Source commit: dbb008ed30d121c7095f11df4f6c488166dcf6b9
+  Source blob SHA: 320363815d46f0a974b93746d1621b0ede80b590
+  Filing shape: Form D/A amendment with prior accession number, many related persons, compensation recipient structure, offering amounts and signatures.
+
+Why use archived copies
+-----------------------
+These are frozen parser specimens. The real source family is SEC EDGAR; live retrieval should not be part of compiler correctness. Preserve exact sample bytes here and use SEC documentation/filings as provenance and differential oracles.
+
+Documentation policy
+--------------------
+Link official SEC documentation rather than mirroring entire manuals/specifications here unless redistribution terms are clear. The point of this branch is a readable inventory plus representative parser bytes, not a duplicate SEC documentation site.

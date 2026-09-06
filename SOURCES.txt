@@ -1,0 +1,36 @@
+FBI CDE JSON SOURCES
+====================
+
+Official source
+---------------
+FBI Crime Data Explorer:
+https://cde.ucr.cjis.gov/
+
+The CDE provides interactive exploration and downloadable reported-crime/UCR/NIBRS data. Endpoint families evolve, so branch samples are frozen response specimens; live CDE is the authoritative current source.
+
+Frozen response examples mirrored here
+--------------------------------------
+Both samples are from the documented/test example corpus in `apsamuel/statpack`, whose examples preserve CDE response shapes used by its FBI adapter.
+
+Upstream commit:
+3fe8f0d03a90a641cb4b5a3b14241c23935297be
+
+sample-small.json
+  Path: src/statpack/data/sources/fbi/docs/examples/fbi-get-summary-by-state.json
+  Blob SHA: 5cca8ebcbe953aa055717c8203df82cfe2227be9
+  Shape: monthly New York/U.S. summary rates/actuals, population participation and CDE metadata.
+
+sample-complex.json
+  Path: src/statpack/data/sources/fbi/docs/examples/fbi-get-nibrs-totals-by-state.json
+  Blob SHA: 653a5d2c2311ecc11d906301973cef12e73be933
+  Shape: large NIBRS category maps for victims/offenders/weapons/locations/relationships/related offenses.
+
+Additional available upstream examples
+--------------------------------------
+- arrest counts by origin/state
+- arrest totals by origin/state
+- expanded homicide by state
+- reporting agencies (roughly 183 KiB)
+- NIBRS totals and UCR summary endpoints
+
+Those can be mirrored later when they expose a parser distinction not already represented by the two current samples.

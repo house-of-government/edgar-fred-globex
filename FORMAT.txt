@@ -1,0 +1,67 @@
+Landsat Collection 2
+====================
+
+Purpose
+-------
+Landsat Collection 2 is the easiest end-to-end satellite target in this set because USGS has already made the raster layer relatively accessible with Cloud Optimized GeoTIFF. It remains interesting for typed parsing because one scene combines several independent metadata/asset formats that should agree.
+
+Collection 2 Level-1 product ingredients
+----------------------------------------
+USGS documents Level-1 products as including:
+- spectral bands in Cloud Optimized GeoTIFF (COG);
+- angle coefficient files / solar and sensor viewing-angle information;
+- quality-assessment bands such as `QA_PIXEL` and `QA_RADSAT`;
+- MTL metadata in Object Description Language form;
+- XML metadata;
+- browse images;
+- STAC metadata/catalog access for cloud-oriented discovery.
+
+For Landsat 8/9 Level-1, spectral measurements are delivered as unsigned 16-bit digital numbers. Metadata supplies radiometric scaling factors for conversion to top-of-atmosphere radiance or reflectance.
+
+Parser architecture
+-------------------
+
+    STAC JSON / product listing
+        -> asset identities
+        -> MTL ODL and/or XML scene metadata
+        -> COG / GeoTIFF structural parser
+        -> QA bit-field interpretation
+        -> stored digital numbers
+        -> scaling/calibration
+        -> physical/geospatial observation
+
+No one format should own facts that belong to another layer. The product layer can cross-check redundant facts such as identifiers, raster dimensions, coordinate reference information and asset roles.
+
+Why COG is useful but not sufficient
+------------------------------------
+COG is GeoTIFF organized for efficient range access. The existing `geotiff` branch can own TIFF/GeoTIFF tag, offset, tile/strip and georeferencing mechanics. Landsat owns product meaning: which asset is band 4, which raster is QA, how scaling is applied, and which metadata describes the scene.
+
+Parser pressure points
+----------------------
+- one scene is a set of files rather than one parse unit;
+- the same scene facts can appear in STAC JSON, MTL, XML and GeoTIFF metadata and should be cross-checkable;
+- MTL/ODL is a separate textual grammar, not JSON or XML;
+- raster pixels are stored digital numbers, not physical reflectance/radiance yet;
+- QA bands are bit-packed classifications rather than ordinary intensity images;
+- COG offset/tile structure belongs to TIFF parsing while cloud-optimized layout adds access constraints;
+- coordinate reference, pixel size and raster dimensions should agree across product/raster metadata;
+- band identity should be explicit rather than inferred from an arbitrary filename substring.
+
+Typed-parser questions to preserve
+----------------------------------
+- Can a discovered asset be refined from generic STAC asset to `spectral_band`, `qa_band`, or metadata asset?
+- Can a raw digital number be impossible to confuse with calibrated radiance/reflectance?
+- Can QA classifications be represented as typed fields rather than manual shifts at every use site?
+- Can scene metadata parsed from ODL/XML be cross-validated against GeoTIFF dimensions and georeferencing before producing a validated scene?
+- Can band identity carry enough information to prevent accidental arithmetic across incompatible resolutions/products?
+
+Useful progression
+------------------
+1. parse one USGS STAC item and enumerate assets;
+2. parse the corresponding MTL/ODL metadata;
+3. open one band COG through the GeoTIFF structural layer;
+4. cross-check scene/band identifiers and raster dimensions;
+5. decode one QA pixel into named fields;
+6. decode one raw spectral pixel and apply its metadata scaling;
+7. attach validated geospatial position;
+8. expose a small human-readable scene result while preserving source fields/provenance.

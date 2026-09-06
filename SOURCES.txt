@@ -1,0 +1,30 @@
+Sentinel-2 SAFE sources
+=======================
+
+SentiWiki: SAFE format
+----------------------
+https://sentiwiki.copernicus.eu/web/safe-format
+
+SentiWiki: Sentinel-2 products
+------------------------------
+https://sentiwiki.copernicus.eu/web/s2-products
+
+The Sentinel-2 product documentation states that Level-1C and Level-2A user products are made available in Sentinel-SAFE format, with JPEG 2000 image data, XML product metadata, quality indicators, auxiliary material and XSD schemas.
+
+Useful schema/document trail
+----------------------------
+The SentiWiki product page links the current Sentinel-2 Product Specification Documents and XSDs. Prefer keeping the product/schema version with every fixture rather than copying a schema into the parser and forgetting where it came from.
+
+Fixture policy
+--------------
+For future fixtures, preserve:
+- exact product identifier;
+- processing level;
+- product/schema version where available;
+- source/download URL or catalog identity;
+- a small manifest/XML specimen separately from large JP2 image assets;
+- checksums for any binary fixture retained outside this staging repository.
+
+First cross-format acceptance target
+------------------------------------
+Given one real Sentinel-2 product, enumerate its product/granule metadata and prove that one named band asset exists, parses as JP2, and agrees with the metadata on the dimensions/resolution facts chosen for the test.

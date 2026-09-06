@@ -1,0 +1,45 @@
+GEOJSON
+=======
+
+Purpose
+-------
+GeoJSON is the text/geospatial bridge in the format zoo: ordinary JSON syntax carrying geometry whose coordinate nesting depth depends on geometry type. It is useful before binary GIS formats because the parser can separate generic JSON decisions from geometry-specific structure.
+
+RFC 7946 core objects
+---------------------
+- Geometry: Point, MultiPoint, LineString, MultiLineString, Polygon, MultiPolygon, GeometryCollection
+- Feature: `geometry`, `properties`, optional `id`
+- FeatureCollection: array of Feature objects
+- optional `bbox`
+
+Coordinate nesting
+------------------
+- Point: `[x, y]` (optionally altitude as a third position element)
+- LineString/MultiPoint: array of positions
+- Polygon/MultiLineString: array of arrays of positions
+- MultiPolygon: another nesting level
+- GeometryCollection: array of heterogeneous geometry objects
+
+Parser pressure points
+----------------------
+- generic JSON parser first, then geometry-specific validation;
+- coordinates are numeric arrays whose nesting depth carries meaning;
+- properties are arbitrary JSON objects and may contain nulls, URLs, punctuation and mixed scalar types;
+- many real feeds contain large FeatureCollections;
+- `geometry` may be null;
+- older/pre-RFC7946 producers may include a `crs` object; RFC 7946 standardized WGS84 and removed that member, so parser policy should distinguish legacy acceptance from canonical emission;
+- a 3-element position may represent altitude, not another coordinate tuple.
+
+Samples
+-------
+`sample-earthquakes.geojson`: selected real USGS earthquake feed features with rich properties, nullable values, 3D Point coordinates and an explicit projected-CRS wrapper from an archived derivative dataset.
+`sample-polygon.geojson`: GDAL documentation polygon with nested coordinate rings and a legacy `crs` member.
+
+Useful checks
+-------------
+1. fixed search for `FeatureCollection`, `geometry`, `coordinates`;
+2. generic JSON tokenization;
+3. dispatch geometry type;
+4. walk coordinates with correct nesting depth;
+5. preserve arbitrary properties without confusing them with geometry;
+6. later test large streaming FeatureCollections and mixed geometry collections.

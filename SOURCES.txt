@@ -1,0 +1,36 @@
+USDA NASS JSON SOURCES
+======================
+
+Official sources/documentation
+-----------------------------
+NASS Quick Stats:
+https://www.nass.usda.gov/Quick_Stats/
+
+NASS Quick Stats JSON/release information:
+https://www.nass.usda.gov/Quick_Stats/JSON/index.php
+
+Quick Stats API base used by public clients:
+https://quickstats.nass.usda.gov/api/
+
+USDA AMS MyMarketNews/MARS is a separate agricultural-market JSON family and remains a future companion lane:
+https://mymarketnews.ams.usda.gov/mars-api/getting-started/technical-instructions
+
+Sample provenance
+-----------------
+sample-small.json
+  Reduced from NASS crop sample rows distributed in the BigQuery public USDA NASS agriculture dataset metadata and mirrored by Snowflake-Labs/ReFoRCE.
+  Upstream commit: d2658991882f06fa0658bb7782ee9ea515fbb10b
+  Path: spider2-lite/resource/databases/bigquery/usda_nass_agriculture/bigquery-public-data.usda_nass_agriculture/crops.json
+  Keeps actual NASS sample values but normalizes downstream `NaN` placeholders to JSON `null` where needed.
+
+sample-complex.json
+  Selected full-width records from an archived Quick Stats JSON response.
+  Upstream: GarrettBeaver/datafun-03-analytics
+  Commit: 1b5777bdd33643ca9144e1a0b6354a128122befb
+  Path: data-json/data.json
+  Original response top-level shape: {"data":[...]}
+  Records shown here are national CHICKENS (EXCL BROILERS) SALES FOR SLAUGHTER values for multiple years; fields and value strings are preserved.
+
+Why selected subsets
+--------------------
+The purpose here is parser diversity, not archival completeness. Source links/commits identify the larger captures. Small frozen subsets keep exact field/value behavior inspectable while still being real NASS-derived data.

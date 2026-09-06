@@ -1,0 +1,73 @@
+MODIS / HDF-EOS2
+================
+
+Purpose
+-------
+MODIS is the first concrete NASA follower for the HDF4 + HDF-EOS layers. It turns the generic container problem into real multispectral Earth observations with geolocation, packed numeric arrays, calibration metadata and quality flags.
+
+Container stack
+---------------
+A useful mental model is:
+
+    HDF4 bytes
+      -> HDF4 tagged objects
+      -> HDF-EOS2 Grid/Swath structures + ECS metadata
+      -> MODIS product conventions
+      -> calibrated/geolocated physical observations
+
+MODIS products are HDF4/HDF-EOS rather than HDF5. HDF4 and HDF5 must not be conflated merely because both use the HDF name.
+
+Concrete Level-1B example
+-------------------------
+MODIS Level-1B calibrated, geolocated radiance products provide measurements across 36 spectral bands, with bands at different nominal spatial resolutions. The files also carry calibration/geolocation/quality information needed to interpret stored numbers correctly.
+
+Product ingredients worth exposing
+----------------------------------
+- scientific datasets (SDS) containing observation arrays;
+- dimension and band metadata;
+- scale/offset and fill-value metadata for packed numeric arrays;
+- uncertainty/error information;
+- quality flags/bit fields;
+- geolocation relationships;
+- HDF-EOS structural metadata such as `StructMetadata.0`;
+- core/archive metadata such as `CoreMetadata.0` and `ArchiveMetadata.0` where present.
+
+Representation versus physical value
+------------------------------------
+Do not make a stored integer masquerade as a radiance/reflectance/temperature. Product metadata determines how stored values are transformed and which stored values mean fill, invalid, saturated or otherwise unusable data.
+
+This should be an explicit parser boundary:
+
+    stored sample
+       -> validity/QA interpretation
+       -> calibrated physical sample
+
+Parser pressure points
+----------------------
+- HDF4 object structure must already be valid before MODIS semantics are attempted;
+- band groups can have different spatial resolutions and array shapes;
+- packed numeric scaling depends on product conventions and attributes;
+- fill values and quality states must remain distinct from ordinary numeric results;
+- QA often compresses several logical flags into integer bits;
+- geolocation is not simply "attach one latitude and longitude scalar" to every array;
+- scientific dimensions, geolocation dimensions and band dimensions have different roles;
+- metadata strings can describe relationships that should become validated structure rather than remaining unchecked text.
+
+Typed-parser questions to preserve
+----------------------------------
+- Can a stored sample type distinguish raw packed integer from calibrated physical value?
+- Can fill/invalid/saturated states be impossible to confuse with a valid value?
+- Can band identity determine expected resolution/shape where the product specification allows it?
+- Can a decoded QA word expose only legal flag fields?
+- Can an HDF-EOS Swath/Grid value prove that the science array and geolocation relationship are dimensionally compatible?
+
+Useful progression
+------------------
+1. identify and inventory a real MODIS HDF4 product;
+2. enumerate SDS names/dimensions/types without reading the full arrays;
+3. locate HDF-EOS structural metadata and classify Grid/Swath structure;
+4. decode one small metadata/QA value;
+5. decode a small slice of one packed scientific array;
+6. apply fill/validity/calibration rules explicitly;
+7. tie the slice to validated geolocation;
+8. expose one human-readable physical observation with provenance back to the stored fields.

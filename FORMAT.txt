@@ -1,0 +1,107 @@
+HDF5
+====
+
+Purpose
+-------
+HDF5 is a binary scientific-data container and object graph, not merely a flat array format. It is a useful follower because parsing metadata requires traversing linked on-disk structures before raw dataset bytes can be interpreted.
+
+Top-level file mechanics
+------------------------
+- HDF5 signature: `\211HDF\r\n\032\n`
+- optional user block can place the signature at specified offsets rather than byte zero
+- superblock versions describe offset/length widths and addresses of core structures
+- root group is the entry point to a graph of linked objects
+
+Core object model
+-----------------
+- groups
+- datasets
+- named datatypes
+- attributes
+- links: hard, soft, external, and newer link classes through library mechanisms
+- object references / region references
+
+Dataset description
+-------------------
+A dataset combines:
+- datatype
+- dataspace (rank, current dimensions, maximum dimensions)
+- storage layout
+- optional fill value
+- optional filter pipeline
+- raw data storage
+
+Important datatype families
+---------------------------
+- signed/unsigned integers with byte order and precision
+- IEEE floating point and other floating descriptions
+- fixed and variable-length strings
+- compound/record types
+- enums
+- arrays
+- variable-length values
+- opaque types
+- references
+
+Storage/layout families
+-----------------------
+- compact
+- contiguous
+- chunked
+- virtual datasets
+
+Chunked storage can require indexing structures such as B-trees or newer extensible-array/fixed-array forms depending on file-format version and dataset shape.
+
+Metadata structures worth inventorying
+--------------------------------------
+- object headers and header messages
+- symbol tables / old-style groups
+- compact/dense group link storage
+- local/global/fractal heaps
+- B-trees and B-tree v2
+- extensible/fixed arrays
+- free-space managers
+- shared object-header messages
+- dataset chunk indexes
+- checksums in newer metadata structures
+
+Parser pressure points
+----------------------
+- offsets/lengths have file-defined widths rather than one universal host integer width;
+- metadata is graph-like and may be shared/referenced;
+- object-header messages are typed and versioned;
+- datatypes can nest recursively (compound fields containing arrays/vlen/reference types);
+- chunk/filter parsing must be separated from decoding compressed raw data;
+- dimensions/count arithmetic needs overflow/bounds checks;
+- byte order belongs to datatype semantics, not necessarily the host CPU;
+- variable-length data can point into global heaps;
+- unknown optional messages/features must be handled according to version/flags rather than guessed;
+- SWMR, virtual datasets, external storage and modern VOL/file-driver concerns should not be confused with the basic on-disk core.
+
+Samples
+-------
+`sample-small.h5`: HDFGroup `file.h5`, a very small official-example binary suitable for signature/superblock/object/dataset traversal.
+`sample-complex.h5`: h5py `compound-dtype-complex.h5`, a compact but structurally harder specimen centered on compound datatypes containing complex-number representations.
+
+Additional followers to add when useful
+---------------------------------------
+- group-heavy / dense-link files
+- attributes and named datatypes
+- chunked datasets
+- gzip/shuffle/fletcher32/filter-pipeline cases
+- variable-length strings and arrays
+- object/region references
+- external links/files
+- virtual datasets
+- old and new superblock/object-header versions
+- corrupted offset/length/checksum fixtures
+
+Useful progression
+------------------
+1. locate and verify signature;
+2. parse superblock and root object address;
+3. enumerate one group/dataset;
+4. parse dataspace + primitive datatype;
+5. locate contiguous raw data;
+6. parse compound datatype recursively;
+7. later add chunk indexes, filters, vlen heaps and references independently.

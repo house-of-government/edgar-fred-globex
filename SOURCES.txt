@@ -1,0 +1,44 @@
+XBRL SOURCES
+============
+
+Official specifications/documentation
+------------------------------------
+XBRL International specifications:
+https://specifications.xbrl.org/
+
+SEC structured data overview:
+https://www.sec.gov/data-research/structured-data
+
+SEC Inline XBRL:
+https://www.sec.gov/data-research/structured-data/inline-xbrl
+
+SEC EDGAR technical specifications:
+https://www.sec.gov/submit-filings/technical-specifications
+
+Samples
+-------
+sample-small.xml
+  Source: ecksbee/sec-testdata
+  Path: wd/folders/hello/instance.xml
+  Source commit: 624bfe2833acfffc825123c6a9edd4c06422e821
+  Source blob SHA: 32769b753fc3e78d702affbd43cf5ed31cb6445d
+  Upstream file explicitly contains a CC0/public-domain dedication.
+
+sample-complex.xml
+  Reduced self-contained specimen derived from:
+  kakuffo/XBRL-Comprehensive-Example, Sample-Instance-Proof.xml
+  Source commit: 762039a26e6fb5d3ba5fb13c9ffd4e30807cc93a
+  The reduction keeps dimensional contexts and multiple unit/fact forms while avoiding mirroring a large unrelated financial example wholesale.
+
+Additional real SEC-style stress sample located
+------------------------------------------------
+emilycoco/parse-xbrl
+  test/sampleXbrlDocuments/costco_inc_10k.xml
+  Source blob SHA: 93b2cca1dc234a7466a98c69075d8be544bb79e3
+  About 38 KiB; includes standard/custom namespaces, many US-GAAP facts, DEI facts, many contexts, dimensions, units and a very large escaped-XHTML accounting-policy text block.
+
+Larger samples in that corpus include 100 KiB to multi-megabyte SEC XBRL instances. Those are linked rather than all duplicated here until a larger-size stress fixture is needed.
+
+Documentation policy
+--------------------
+Link XBRL/SEC specifications here. Mirror only data/specimen material whose redistribution is clear or a deliberately reduced parser specimen with provenance.

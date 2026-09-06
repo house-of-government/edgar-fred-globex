@@ -9,6 +9,7 @@ The immediate use is to find interesting, understandable structured data for exp
 - [EDGAR](EDGAR.md) — SEC filings; Inline XBRL plus extracted XBRL/XML and XML linkbases.
 - [FRED](FRED.md) — Federal Reserve Bank of St. Louis economic series; API supports XML directly and defaults to XML in v1.
 - [CME Globex](GLOBEX.md) — SBE market-data/order-entry protocols; XML schemas describe binary messages and repeating groups.
+- [IEX Exchange](IEX.md) — retired IEX Cloud REST/JSON API as an interface reference, plus current IEX-TP TOPS/DEEP/DEEP+ binary feeds and frozen public HIST/sample-PCAP fixtures.
 - [SEC MIDAS](MIDAS.md) — exchange/order-book derived market-structure datasets; useful for market-data loops and classifications, but public downloads are not chiefly an XML source.
 - [CRSP](CRSP.md) — historical securities data; current documented delivery is primarily flat files (ASCII/SAS/R), so useful data but not the first XML target.
 - [S&P Global](SP_GLOBAL.md) — commercial economic data; IDDS can deliver XML or CSV feeds.
@@ -21,6 +22,7 @@ A useful progression is not “minimal compiler acceptance tests,” but increas
 1. FRED observations: repeated elements with dates and numeric values.
 2. EDGAR XBRL: namespaces, attributes, contexts, units, financial facts, and linkbases.
 3. Globex SBE schema: messages, fields, composites, repeating groups, template IDs, and versioning — XML that naturally describes later binary dispatch.
-4. JCT/S&P Global where the subject matter itself suggests economically meaningful filtering and aggregation.
+4. IEX: PCAP → IEX-TP → TOPS/DEEP/DEEP+; real binary framing, version selection, message dispatch, and book reconstruction.
+5. JCT/S&P Global where the subject matter itself suggests economically meaningful filtering and aggregation.
 
 MIDAS and CRSP belong in the same notebook because they are economically/financially interesting comparison sources even when XML is not their natural transport.

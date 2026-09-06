@@ -1,0 +1,38 @@
+FASTQ
+=====
+
+Purpose
+-------
+FASTQ is a useful streaming/parser follower because it pairs sequence text with an equally long quality payload whose punctuation can look structural. It tests more state than FASTA without requiring XML/JSON machinery.
+
+Common record shape
+-------------------
+A simple record is:
+1. `@` title line
+2. sequence
+3. `+` separator line (optionally repeating an identifier)
+4. quality characters with total length equal to sequence length
+
+Real files may wrap sequence and quality across multiple physical lines, so a robust parser cannot always assume exactly four physical lines per record.
+
+Important distinctions
+----------------------
+- `@` starts a record only in the correct parser state; it can occur in quality text.
+- `+` is structural only after the sequence portion.
+- total quality-character count must match total sequence-character count.
+- FASTQ quality encodings historically include Sanger/Phred+33, older Solexa and Illumina variants; parser structure and quality-score interpretation are separate concerns.
+- sequence motif search should search sequence bytes, not quality bytes.
+- wrapped records require counting rather than blindly taking one sequence and one quality line.
+- zero-length, truncated, overlong/short quality, and invalid-quality cases are valuable later rejection fixtures.
+
+Samples
+-------
+`sample-small.fastq`: three ordinary short records.
+`sample-complex.fastq`: three long Sanger records whose quality payloads are wrapped across multiple lines and contain punctuation including `@` and `+`.
+
+First parser/search checks
+--------------------------
+- exact motif search only in sequence state;
+- same motif text in quality state must be ignored;
+- wrapped quality must accumulate to the sequence length;
+- next `@` is a record marker only after the previous record is complete.

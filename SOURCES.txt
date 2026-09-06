@@ -1,0 +1,54 @@
+HDF5 SOURCES
+============
+
+Official documentation
+----------------------
+HDF5 Field Guide / documentation:
+https://docs.hdfgroup.org/hdf5/latest/
+
+HDF5 file format specification:
+https://docs.hdfgroup.org/hdf5/latest/_f_m_t3.html
+
+HDF5 source repository:
+https://github.com/HDFGroup/hdf5
+
+Samples
+-------
+sample-small.h5
+  Source: HDFGroup/hdf5-pickles
+  Commit: 259c02bf694a1dbcb3da73478e7969bbe7022759
+  Path: examples/file.h5
+  Source blob SHA: e48684a0e762d83e93c385a56358315a97e3f046
+  Size: 3319 bytes
+  Shape: tiny official/example HDF5 file for baseline signature/superblock/object traversal.
+
+sample-complex.h5
+  Source: h5py/h5py
+  Commit: 748ad6b237e78cf527f09c529e7adeede93526d2
+  Path: h5py/tests/data_files/compound-dtype-complex.h5
+  Source blob SHA: 77ebad4afd8f89f24591f4f2751006c77e984251
+  Size: 13792 bytes
+  Shape: compound-datatype/complex-number compatibility specimen; useful for recursive datatype-message parsing.
+
+Additional available h5py binary specimens
+-------------------------------------------
+- `vlen_string_dset.h5` — variable-length strings, 6304 bytes
+- `vlen_string_s390x.h5` — cross-architecture/endian provenance, 9008 bytes
+- `vlen_string_dset_utc.h5` — larger variable-length-string file, about 170 KiB
+
+Additional HDFGroup test families worth following later
+-------------------------------------------------------
+- groups with compact/dense link storage
+- chunked datasets and multiple chunk-index versions
+- filters/compression/checksums
+- attributes and named datatypes
+- references and heaps
+- external links/storage
+- virtual datasets
+- superblock/object-header version compatibility
+- SWMR-format metadata
+- intentionally corrupted files
+
+Documentation policy
+--------------------
+Link the official HDF5 Field Guide/file-format documentation. Mirror only compact binary fixtures whose source licensing permits redistribution; keep the larger official test corpus upstream until a specific structural distinction is needed.

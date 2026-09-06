@@ -1,0 +1,80 @@
+GEOTIFF / TIFF
+==============
+
+Purpose
+-------
+GeoTIFF is the first binary/geospatial parser lane. It layers georeferencing metadata onto TIFF, so a parser must handle ordinary TIFF directory/offset mechanics before interpreting coordinate-system tags.
+
+TIFF file structure
+-------------------
+- byte-order marker: `II` (little-endian) or `MM` (big-endian)
+- classic TIFF magic number 42
+- BigTIFF magic number 43, with wider offset/count fields
+- offset to first Image File Directory (IFD)
+- each IFD contains a count followed by fixed-size tag entries
+- a tag entry records tag number, TIFF field type, count, and either the value itself or an offset to the value
+- IFDs can chain to additional images/pages/overviews
+
+Common TIFF image tags
+----------------------
+- ImageWidth / ImageLength
+- BitsPerSample
+- Compression
+- PhotometricInterpretation
+- StripOffsets / StripByteCounts
+- RowsPerStrip
+- SamplesPerPixel
+- PlanarConfiguration
+- TileWidth / TileLength / TileOffsets / TileByteCounts
+- ColorMap
+- SampleFormat
+- SubIFDs
+
+Storage/layout choices
+----------------------
+- strips versus tiles
+- contiguous versus separated/interleaved bands
+- one or many bands
+- uncompressed and multiple compression codecs
+- predictor/filter stages
+- multiple IFDs / reduced-resolution overviews
+
+GeoTIFF tags and keys
+---------------------
+Important GeoTIFF metadata includes:
+- ModelPixelScaleTag (33550)
+- ModelTiepointTag (33922)
+- ModelTransformationTag (34264)
+- GeoKeyDirectoryTag (34735)
+- GeoDoubleParamsTag (34736)
+- GeoAsciiParamsTag (34737)
+
+The GeoKey directory is itself a small typed directory that can refer to values in the double/ascii parameter tags. Common keys describe model type, raster interpretation, geographic/projected CRS, ellipsoid/datum, units and coordinate transformations.
+
+Parser pressure points
+----------------------
+- endianness affects every multi-byte field;
+- values may be inline or indirect through offsets;
+- tag count/type determines byte size and therefore whether indirection occurs;
+- offsets/counts require overflow and bounds checks;
+- IFD chains and SubIFDs create graph-like traversal;
+- unknown tags must be skippable without losing directory synchronization;
+- strip/tile tables can be large;
+- BigTIFF widens offsets/counts and must not be mistaken for classic TIFF;
+- georeferencing can use scale+tiepoint, transformation matrix, or ground-control points rather than one universal representation;
+- compressed pixel bytes are a separate stage from structural metadata parsing.
+
+Samples
+-------
+`sample-small.tif`: GDAL `byte.tif`, a tiny classic little-endian GeoTIFF with one 8-bit band and ordinary georeferencing tags.
+`sample-complex.tif`: GDAL `byte_gcp.tif`, same compact raster class but carrying a set of ground-control points and GCP projection metadata, so its metadata/offset structure differs materially from the simple affine-georeferenced case.
+
+Useful progression
+------------------
+1. verify endian marker, magic and first IFD offset;
+2. enumerate tags without decoding image pixels;
+3. safely follow indirect tag payloads;
+4. interpret width/height/bits/strip layout;
+5. interpret GeoTIFF scale/tiepoint/geokeys;
+6. compare affine georeferencing with GCP-based georeferencing;
+7. later add tiled, compressed, multiband and BigTIFF specimens.

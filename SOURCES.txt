@@ -1,0 +1,28 @@
+HDF-EOS sources
+===============
+
+NASA Earthdata
+--------------
+https://wiki.earthdata.nasa.gov/spaces/DAS/pages/170801036/Library-Tools
+https://wiki.earthdata.nasa.gov/spaces/DAS/pages/170801032/SDP%2BToolkit%2Band%2BHDF-EOS%2BEOSDIS%2BCore%2BSystem%2BProject
+https://wiki.earthdata.nasa.gov/spaces/DAS/pages/202211788/Toolkit%2BDownloads
+
+These pages describe HDF-EOS as standard HDF plus ECS conventions/metadata and identify Grid, Swath and Point as the principal geolocation structures.
+
+EOSDIS / HDF-EOS5 standard
+---------------------------
+https://www.earthdata.nasa.gov/s3fs-public/imported/ESDS-RFC-008-v1.1.pdf
+
+The RFC describes the HDF-EOS5 data model and its mapping to HDF5. It is also useful for keeping HDF-EOS semantic structures separate from the HDF5 storage layer.
+
+EOSDIS handbook
+---------------
+https://www.earthdata.nasa.gov/s3fs-public/imported/EOSDIS_Handbook_1.5.pdf
+
+The handbook gives an accessible description of Grid, Swath and Point and the processing contexts in which each appears.
+
+MODIS follower
+--------------
+https://modis.gsfc.nasa.gov/data/dataprod/pdf/MOD_02.pdf
+
+MODIS Level 1B calibrated/geolocated radiance products are a concrete HDF-EOS example and make a good domain-level parser target after the generic HDF-EOS layer works.

@@ -1,0 +1,30 @@
+NOAA / NWS XML SOURCES
+======================
+
+Official current-observation XML/RSS index:
+https://forecast.weather.gov/xml/current_obs/seek.php?state=us
+
+Historical schema reference used by these archived observations:
+http://www.weather.gov/view/current_observation.xsd
+
+Samples mirrored here
+---------------------
+sample-small.xml
+  Station: 0Y2W3
+  Archived copy: matts5517/ExtremeWeatherSite_v4
+  Path: python/testFiles/0Y2W3.xml
+  Branch: Development
+  Source blob SHA: 11ed623e68e26e595c1585297be245cc394471a8
+
+sample-complex.xml
+  Station: KARB, Ann Arbor Municipal Airport, Michigan
+  Archived copy: matts5517/ExtremeWeatherSite_v4
+  Path: python/testFiles/KARB.xml
+  Branch: Development
+  Source blob SHA: 365ec02e7fbbf506bed62b36e96377df601f5693
+
+These are historical frozen observations rather than current weather truth. That is desirable for deterministic parser work.
+
+Documentation policy
+--------------------
+The branch links to NWS/NOAA source material. It does not mirror entire agency documentation sites. Government sample data are retained here as parser fixtures with their provenance.

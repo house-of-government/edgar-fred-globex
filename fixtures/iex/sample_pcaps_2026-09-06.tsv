@@ -1,0 +1,6 @@
+feed	sample_date	feed_version	transport	url
+TOPS	2018-01-27	1.6	IEX-TP v1	https://www.googleapis.com/download/storage/v1/b/iex/o/data%2Ffeeds%2F20180127%2F20180127_IEXTP1_TOPS1.6.pcap.gz?alt=media&generation=1517101257197858
+DEEP	2018-01-27	1.0	IEX-TP v1	https://www.googleapis.com/download/storage/v1/b/iex/o/data%2Ffeeds%2F20180127%2F20180127_IEXTP1_DEEP1.0.pcap.gz?alt=media&generation=1517101215560431
+DEEP+	2024-10-01	1.0	IEX-TP v1	https://storage.googleapis.com/iex/data/feeds/20241001/20241001_IEXTP1_DPLS1.0.pcap.gz
+DEEP+	2024-12-04	1.0	IEX-TP v1	https://iexpublic.blob.core.windows.net/iexpublic-marketdata/20241204_IEXTP1_DPLS/20241204_IEXTP1_DPLS1.0.pcap.gz
+DEEP+	2024-12-06	1.0	IEX-TP v1	https://iexpublic.blob.core.windows.net/iexpublic-marketdata/20241206_IEXTP1_DPLS/20241206_IEXTP1_DPLS1.0.pcap.gz

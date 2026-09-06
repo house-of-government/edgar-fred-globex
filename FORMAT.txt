@@ -1,0 +1,53 @@
+USDA NASS QUICK STATS JSON
+==========================
+
+Purpose
+-------
+This branch keeps real USDA National Agricultural Statistics Service (NASS) Quick Stats response data as a JSON parser follower. The records are wide and repetitive, with many optional geographic/domain fields and published values whose textual representation matters.
+
+Typical API response
+--------------------
+The Quick Stats JSON GET form returns an object with a `data` array. Each record can contain dozens of fields including:
+- source_desc
+- sector_desc
+- group_desc
+- commodity_desc
+- class_desc
+- prodn_practice_desc
+- util_practice_desc
+- statisticcat_desc
+- unit_desc
+- short_desc
+- domain_desc / domaincat_desc
+- agg_level_desc
+- state/county/region/watershed/congressional geography fields
+- country/location fields
+- year/frequency/reference-period fields
+- week_ending / load_time
+- `Value`
+- `CV (%)`
+
+Parser/data pressure points
+---------------------------
+- many fields are empty strings rather than null;
+- other downstream representations may normalize empties to null, so provenance matters;
+- `Value` is often a string, even for numeric data, and can contain commas or suppression markers;
+- field name `CV (%)` contains spaces/punctuation;
+- codes that look numeric can be strings with leading zeroes;
+- records can be very wide even when most dimensions are unused;
+- `ANIMALS & PRODUCTS` and other text contains XML-like/operator punctuation but is ordinary JSON string content;
+- API result sets can be huge, making selected-field/streaming parsing attractive later.
+
+Samples
+-------
+`sample-small.json`: selected crop price records (hay/soybean style schema) reduced to the fields most useful for an initial parser.
+`sample-complex.json`: selected records from a real archived Quick Stats JSON response for national chicken sales, preserving the full wide record shape including empty fields, `Value`, `CV (%)`, dates, geography and domain fields.
+
+Useful progression
+------------------
+1. find `commodity_desc` / `Value` by fixed search;
+2. JSON tokenization;
+3. parse one record and extract `Value` as text;
+4. explicitly convert a comma-formatted numeric string;
+5. distinguish empty string, null, absent field and suppression code;
+6. later stream a larger response without materializing every record.

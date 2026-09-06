@@ -1,0 +1,45 @@
+GEOTIFF / TIFF SOURCES
+======================
+
+Reference documentation
+-----------------------
+GDAL GeoTIFF driver:
+https://gdal.org/en/stable/drivers/raster/gtiff.html
+
+OGC GeoTIFF standard / resources:
+https://www.ogc.org/standard/geotiff/
+
+TIFF 6.0 specification archive/reference:
+https://www.itu.int/itudoc/itu-t/com16/tiff-fx/docs/tiff6.pdf
+
+Samples
+-------
+Both samples come from OSGeo/GDAL at commit:
+d6fd56f52d904c605fb1cc493bfd40fc976e7c0b
+
+sample-small.tif
+  Path: autotest/gcore/data/byte.tif
+  Source blob SHA: 6fddac1286241fd62383c20965a11c38f021d7bc
+  Shape: compact classic little-endian TIFF/GeoTIFF, 20x20, 8-bit single-band raster with ordinary georeferencing.
+
+sample-complex.tif
+  Path: autotest/gcore/data/byte_gcp.tif
+  Source blob SHA: fa8405e63254b6e27fe5706cebac7c08abc04f82
+  Shape: compact classic TIFF with ground-control-point metadata and projection text, useful for metadata indirection/GCP parsing rather than only affine geotransforms.
+
+Additional useful GDAL specimens for later expansion
+----------------------------------------------------
+- `rgbsmall.tif` — RGB/multiband image
+- tiled/interleave variants created by GDAL TIFF tests
+- palette/color-table images
+- compressed TIFFs (LZW/Deflate/JPEG/etc.)
+- mask/alpha configurations
+- multi-IFD / overview/SubIFD cases
+- BigTIFF
+- sparse/large-offset/corruption cases
+
+Those should be added when they expose a parser or backend distinction beyond the two current specimens rather than merely increasing file count.
+
+Documentation policy
+--------------------
+Link TIFF/GeoTIFF standards and GDAL driver documentation. Mirror the compact test binaries whose upstream redistribution is covered by GDAL's licensing; do not duplicate entire manuals here.

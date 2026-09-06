@@ -1,0 +1,36 @@
+GOES-R sources
+==============
+
+NOAA GOES-R document index
+--------------------------
+https://www.ospo.noaa.gov/resources/documents/goes-r.html
+
+Beginner's Guide to GOES-R Series Data
+--------------------------------------
+https://goes-r.noaa.gov/downloads/resources/documents/Beginners_Guide_to_GOES-R_Series_Data.pdf
+
+The guide documents netCDF-4 product files and common attributes such as `_FillValue`, `valid_range`, `scale_factor`, `add_offset` and `units`.
+
+ABI Level 1b sample data
+------------------------
+https://goes-r.noaa.gov/products/data/ABI-L1b-ContFullDisk.html
+
+NOAA provides sample ABI Level 1b files in netCDF form, one file per ABI band in the published sample set.
+
+ABI Level 0 archive description
+-------------------------------
+https://www.ncei.noaa.gov/access/metadata/landing-page/bin/iso?id=gov.noaa.ncdc%3AC01570
+
+NOAA states that ABI Level 0 data are CCSDS packets and that the Level 0 files are delivered as netCDF-4 with constituent packets stored in a byte array, making them opaque to standard netCDF readers.
+
+Other Level 0 examples with the same layering
+---------------------------------------------
+https://www.ncei.noaa.gov/access/metadata/landing-page/bin/iso?id=gov.noaa.ncei.swx%3Aexis-l0-goesr
+https://www.ncei.noaa.gov/access/metadata/landing-page/bin/iso?id=gov.noaa.ncei.swx%3Aseis-l0-goesr
+https://www.ncei.noaa.gov/access/metadata/landing-page/bin/iso?id=gov.noaa.ncei.swx%3Amag-l0-goesr
+
+CCSDS base protocol
+-------------------
+https://ccsds.org/Pubs/133x0b2e2.pdf
+
+Keep generic CCSDS primary-header parsing in the `ccsds-space-packets` branch. GOES-specific APID and payload meaning belongs here.

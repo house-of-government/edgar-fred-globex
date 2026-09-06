@@ -1,0 +1,72 @@
+KML
+===
+
+Purpose
+-------
+KML is the XML/geospatial follower in the format zoo. It reuses ordinary XML machinery but adds geometry-specific dispatch, coordinate text parsing, styling, time, nested folders/documents and extension namespaces.
+
+Core object families
+--------------------
+- kml root / Document / Folder
+- Placemark
+- Point
+- LineString
+- LinearRing
+- Polygon (outer/inner boundaries)
+- MultiGeometry
+- Model
+- GroundOverlay / PhotoOverlay / ScreenOverlay
+- NetworkLink
+- Style / StyleMap
+- ExtendedData
+- TimeStamp / TimeSpan
+- LookAt / Camera / Region / Lod
+
+Important text conventions
+--------------------------
+- Point/LineString/Polygon coordinate tuples are normally `longitude,latitude[,altitude]`.
+- Multiple tuples are whitespace-separated inside `<coordinates>`.
+- KML colors are normally encoded AABBGGRR rather than the more familiar RRGGBBAA order.
+- descriptions may contain escaped markup or actual XML child markup depending on the producer.
+
+Namespaces and extensions
+-------------------------
+KML 2.2 uses `http://www.opengis.net/kml/2.2`.
+Google's `gx:` extension namespace adds constructs such as `gx:Track`, `gx:MultiTrack`, tours and extra altitude modes. Historical KML 2.1 documents use older namespace URIs and are still useful compatibility specimens.
+
+Parser pressure points
+----------------------
+- ordinary XML namespaces plus semantic dispatch on many element kinds;
+- nested Documents/Folders/Placemarks;
+- coordinate tuples embedded in text rather than XML elements;
+- variable geometry types and nested boundary structures;
+- optional altitude and altitudeMode;
+- Styles/StyleMaps referenced by IDs;
+- arbitrary ExtendedData payloads;
+- time-aligned `when` plus `gx:coord` sequences;
+- extension namespaces;
+- network-link URLs should not be fetched merely because the XML was parsed;
+- KMZ is ZIP-packaged KML plus resources and is a separate container concern.
+
+Samples
+-------
+`sample-small.kml`: a compact historical KML 2.1 Placemark with a Point and description markup.
+`sample-complex.kml`: KML 2.2 plus the Google `gx:` extension, with a time-aligned `gx:Track`.
+
+Additional useful stress/rejection cases available upstream
+----------------------------------------------------------
+- empty KML documents
+- truncated/malformed KML
+- nested folders and multiple placemarks
+- style-heavy generated output
+- KMZ archives
+- GroundOverlay / NetworkLink / Region examples
+
+Useful progression
+------------------
+1. XML tokenization and namespace recognition;
+2. dispatch Document/Folder/Placemark/geometry types;
+3. parse a Point coordinate tuple;
+4. parse repeated LineString/Polygon coordinate tuples;
+5. align `when` and `gx:coord` events for a Track;
+6. later preserve styles/ExtendedData and KMZ/resource boundaries.

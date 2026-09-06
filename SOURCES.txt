@@ -1,0 +1,38 @@
+KML SOURCES
+===========
+
+Official/reference documentation
+--------------------------------
+OGC KML standard landing page:
+https://www.ogc.org/standard/kml/
+
+Google KML reference:
+https://developers.google.com/kml/documentation/kmlreference
+
+GDAL KML driver documentation:
+https://gdal.org/en/stable/drivers/vector/kml.html
+
+Samples
+-------
+Both samples are from the OSGeo/GDAL test corpus at commit:
+d6fd56f52d904c605fb1cc493bfd40fc976e7c0b
+
+sample-small.kml
+  Path: autotest/ogr/data/kml/placemark.kml
+  Blob SHA: 383d8a652fac25dc3bb94d01cf3a1bafc1d9925a
+  Shape: historical KML 2.1, Placemark, description containing child markup, Point, 3-value coordinate tuple.
+
+sample-complex.kml
+  Path: autotest/ogr/data/kml/gxtrack.kml
+  Blob SHA: 57980ce4fadc0bd0404ba25bd65c213bef4ce98d
+  Shape: KML 2.2 with `gx:` extension, Document/Placemark, repeated timestamps and repeated track coordinates.
+
+Useful adjacent upstream fixtures
+--------------------------------
+- autotest/ogr/data/kml/empty.kml
+- autotest/ogr/data/kml/truncated.kml
+- additional generated KML exercised by autotest/ogr/ogr_kml.py and ogr_libkml.py
+
+Documentation policy
+--------------------
+Link standards/reference manuals. Mirror only compact test/data specimens whose upstream licensing permits redistribution; do not duplicate entire KML manuals here.

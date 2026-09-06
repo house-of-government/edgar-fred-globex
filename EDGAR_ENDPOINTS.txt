@@ -1,0 +1,81 @@
+SEC EDGAR PUBLIC DATA ENDPOINTS
+===============================
+
+REST JSON
+---------
+https://data.sec.gov/submissions/CIK##########.json
+https://data.sec.gov/api/xbrl/companyconcept/CIK##########/{taxonomy}/{tag}.json
+https://data.sec.gov/api/xbrl/companyfacts/CIK##########.json
+https://data.sec.gov/api/xbrl/frames/{taxonomy}/{tag}/{unit}/{period}.json
+
+Nightly bulk JSON archives
+--------------------------
+https://www.sec.gov/Archives/edgar/daily-index/xbrl/companyfacts.zip
+https://www.sec.gov/Archives/edgar/daily-index/bulkdata/submissions.zip
+
+EDGAR indexes and directory metadata
+------------------------------------
+https://www.sec.gov/Archives/edgar/daily-index/
+https://www.sec.gov/Archives/edgar/full-index/
+https://www.sec.gov/Archives/edgar/daily-index/{YEAR}/QTR{Q}/company.{YYYYMMDD}.idx
+https://www.sec.gov/Archives/edgar/daily-index/{YEAR}/QTR{Q}/form.{YYYYMMDD}.idx
+https://www.sec.gov/Archives/edgar/daily-index/{YEAR}/QTR{Q}/master.{YYYYMMDD}.idx
+https://www.sec.gov/Archives/edgar/daily-index/{YEAR}/QTR{Q}/crawler.{YYYYMMDD}.idx
+https://www.sec.gov/Archives/edgar/full-index/{YEAR}/QTR{Q}/company.idx
+https://www.sec.gov/Archives/edgar/full-index/{YEAR}/QTR{Q}/form.idx
+https://www.sec.gov/Archives/edgar/full-index/{YEAR}/QTR{Q}/master.idx
+https://www.sec.gov/Archives/edgar/full-index/{YEAR}/QTR{Q}/xbrl.idx
+
+Directory representations available throughout Archives
+-------------------------------------------------------
+{directory}/index.html
+{directory}/index.xml
+{directory}/index.json
+
+Per-filer and per-filing archive paths
+--------------------------------------
+https://www.sec.gov/Archives/edgar/data/{CIK}/
+https://www.sec.gov/Archives/edgar/data/{CIK}/{ACCESSION_WITHOUT_DASHES}/
+https://www.sec.gov/Archives/edgar/data/{CIK}/{ACCESSION_WITH_DASHES}.txt
+https://www.sec.gov/Archives/edgar/data/{CIK}/{ACCESSION_WITHOUT_DASHES}/{ACCESSION_WITH_DASHES}-index.html
+https://www.sec.gov/Archives/edgar/data/{CIK}/{ACCESSION_WITHOUT_DASHES}/{ACCESSION_WITH_DASHES}-index-headers.html
+https://www.sec.gov/Archives/edgar/data/{CIK}/{ACCESSION_WITHOUT_DASHES}/{ACCESSION_WITH_DASHES}-xbrl.zip
+
+Common files inside XBRL-capable filing directories
+---------------------------------------------------
+{primary-document}.htm
+{primary-document}_htm.xml
+{company-date}.xsd
+{company-date}_def.xml
+{company-date}_lab.xml
+{company-date}_pre.xml
+FilingSummary.xml
+MetaLinks.json
+
+Structured disclosure RSS/XML
+-----------------------------
+https://www.sec.gov/Archives/edgar/usgaap.rss.xml
+https://www.sec.gov/Archives/edgar/xbrl-rr.rss.xml
+https://www.sec.gov/Archives/edgar/xbrl-inline.rss.xml
+https://www.sec.gov/Archives/edgar/xbrlrss.all.xml
+https://www.sec.gov/Archives/edgar/monthly/
+https://www.sec.gov/Archives/edgar/monthly/xbrlrss-{YYYY}-{MM}.xml
+
+Raw dissemination archives
+--------------------------
+https://www.sec.gov/Archives/edgar/Feed/
+https://www.sec.gov/Archives/edgar/Oldloads/
+
+CIK / ticker reference data
+---------------------------
+https://www.sec.gov/files/company_tickers.json
+https://www.sec.gov/files/company_tickers_exchange.json
+https://www.sec.gov/files/company_tickers_mf.json
+
+Public documentation / discovery
+--------------------------------
+https://www.sec.gov/search-filings/edgar-application-programming-interfaces
+https://www.sec.gov/search-filings/edgar-search-assistance/accessing-edgar-data
+https://www.sec.gov/about/developer-resources
+https://www.sec.gov/data-research/structured-data/structured-disclosure-rss-feeds
+https://www.sec.gov/data-research/sec-markets-data

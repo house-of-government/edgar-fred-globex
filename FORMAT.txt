@@ -1,0 +1,73 @@
+netCDF
+======
+
+Purpose
+-------
+netCDF is a scientific-data model with several on-disk encodings. It is a strong parser target because the same logical ideas — dimensions, variables and attributes — appear in both the compact classic family and the much richer HDF5-backed netCDF-4 family.
+
+Format families
+---------------
+Classic-family files can be identified by the first four bytes:
+- `CDF\001` — classic format;
+- `CDF\002` — 64-bit offset format;
+- `CDF\005` — CDF-5 / 64-bit data format.
+
+netCDF-4 uses HDF5 as its storage layer. A parser must therefore distinguish the netCDF data model from the lower-level HDF5 object graph.
+
+Classic data model
+------------------
+Core objects are:
+- named dimensions;
+- named variables whose shapes refer to dimensions;
+- attributes attached globally or to variables;
+- one unlimited/record dimension in the classic model.
+
+The header describes dimensions, attributes and variables before the data regions. Variables can be fixed-size or record variables. Record variables are interleaved by record rather than necessarily forming one contiguous region per variable.
+
+netCDF-4 additions
+------------------
+The enhanced model adds, among other things:
+- groups;
+- multiple unlimited dimensions;
+- compound types;
+- enums;
+- variable-length types;
+- opaque types;
+- chunking, compression and other HDF5-backed storage choices.
+
+Scientific-data semantics
+-------------------------
+The container alone is not enough. Common conventions and attributes add meaning:
+- `_FillValue` / missing-data handling;
+- `valid_range`, `valid_min`, `valid_max`;
+- `scale_factor` and `add_offset` for packed numeric data;
+- `units` and descriptive names;
+- coordinate variables and coordinate-reference information;
+- CF conventions in many Earth-science products.
+
+Parser pressure points
+----------------------
+- format/version dispatch before interpreting widths and offsets;
+- dimensions are named and variables refer to them indirectly;
+- array shape is semantic information that must agree with stored element counts;
+- record variables introduce striding/interleaving;
+- padding and offset arithmetic need bounds/overflow checks;
+- packed integers are not yet physical values until scale/offset rules are applied;
+- fill/missing values must remain distinct from valid numeric values;
+- netCDF-4 parsing naturally composes with the HDF5 parser rather than duplicating it;
+- unknown attributes should remain available without pretending they have understood semantics.
+
+Earth-observation follower
+--------------------------
+GOES-R Level 1b and Level 2+ products are an immediate real-data follower. NOAA documents these as netCDF-4 and makes heavy use of dimensions, attributes, packed values, data-quality flags and geostationary-grid navigation.
+
+Useful progression
+------------------
+1. identify classic-family signature and version;
+2. enumerate dimensions, variables and attributes;
+3. decode one fixed-size primitive variable;
+4. handle one record variable correctly;
+5. enforce shape/count/offset invariants;
+6. apply fill/range/scale/offset semantics as a separate layer;
+7. map a small netCDF-4/HDF5 specimen into the same logical model;
+8. use a GOES-R product as the first domain-level test.

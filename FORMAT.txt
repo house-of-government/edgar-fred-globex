@@ -1,0 +1,69 @@
+JPEG 2000 / JP2
+===============
+
+Purpose
+-------
+JPEG 2000 is the image layer used by Sentinel-2 SAFE products. For parser work, the useful first target is not wavelet decompression. It is the JP2 box container and enough codestream structure to locate and validate imagery metadata safely.
+
+JP2 identification
+------------------
+A normal JP2 file begins with the signature-box bytes:
+
+    00 00 00 0C 6A 50 20 20 0D 0A 87 0A
+
+and is followed by a file-type box whose brand commonly identifies `jp2 `.
+
+Box model
+---------
+A JP-family file is a sequence of boxes. A normal box starts with:
+- 32-bit big-endian box length;
+- 4-byte box type;
+- box payload.
+
+Special length values:
+- length `1` means an additional 64-bit extended length follows;
+- length `0` means the box extends to end of file.
+
+Some boxes are superboxes containing nested boxes. Important JP2 concepts include:
+- signature box;
+- file type box;
+- JP2 header superbox;
+- image header;
+- colour specification;
+- optional resolution/metadata/UUID/XML boxes;
+- contiguous codestream box (`jp2c`).
+
+Codestream boundary
+-------------------
+The JPEG 2000 codestream has its own marker-based grammar. Container parsing and image decompression should be separate stages. An early Idric parser can prove:
+- the box tree is structurally valid;
+- box lengths remain within the file;
+- required image metadata is consistent;
+- a codestream exists and begins plausibly;
+without implementing inverse wavelet transforms.
+
+Parser pressure points
+----------------------
+- all box lengths are untrusted and can be 32- or 64-bit;
+- length includes the box header, so underflow must be rejected;
+- nested superboxes require bounded sub-readers rather than global seeking;
+- unknown box types are legal in extension-friendly positions and should remain skippable;
+- metadata can appear as binary fields, XML, UUID-labelled payloads, or codestream markers;
+- container-level image dimensions/components must not silently disagree with codestream information;
+- codestream parsing is a second grammar with marker lengths and tile/component state;
+- decoding compressed pixels is a third stage and should not contaminate structural parsing.
+
+Why it is a useful typed-parser target
+--------------------------------------
+JP2 gives a compact example of length-indexed subregions. A validated box should carry a payload boundary that child parsing cannot escape. Superboxes then become recursive bounded regions, while a codestream box can hand a validated byte slice to a different parser.
+
+Useful progression
+------------------
+1. recognize the signature box;
+2. enumerate top-level box type/length pairs;
+3. support extended length and end-of-file length;
+4. parse the JP2 header superbox inside its exact bounds;
+5. expose dimensions/component count/colour metadata;
+6. locate the contiguous codestream without decoding it;
+7. inspect initial codestream markers;
+8. use a Sentinel-2 band file as the real-data follower.

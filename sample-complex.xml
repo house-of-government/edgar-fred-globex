@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Reduced parser specimen from the public comprehensive XBRL example; provenance in SOURCES.txt -->
+<xbrl
+  xmlns='http://www.xbrl.org/2003/instance'
+  xmlns:xbrli='http://www.xbrl.org/2003/instance'
+  xmlns:link='http://www.xbrl.org/2003/linkbase'
+  xmlns:xlink='http://www.w3.org/1999/xlink'
+  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+  xmlns:xbrldi='http://xbrl.org/2006/xbrldi'
+  xmlns:iso4217='http://www.xbrl.org/2003/iso4217'
+  xmlns:gaap='http://xasb.org/gaap'
+  xmlns:company='http://www.example.com/company'>
+
+  <link:schemaRef xlink:type="simple" xlink:href="gaap.xsd" />
+  <link:linkbaseRef xlink:type="simple" xlink:href="gaap-formula.xml" xlink:arcrole="http://www.w3.org/1999/xlink/properties/linkbase"/>
+
+  <context id='I-2007'>
+    <entity>
+      <identifier scheme='http://www.sec.gov/CIK'>1234567890</identifier>
+      <segment>
+        <xbrldi:explicitMember dimension="gaap:EntityAxis">gaap:ABCCompanyDomain</xbrldi:explicitMember>
+        <xbrldi:explicitMember dimension="gaap:BusinessSegmentAxis">gaap:ConsolidatedGroupDomain</xbrldi:explicitMember>
+        <xbrldi:explicitMember dimension="gaap:VerificationAxis">gaap:UnqualifiedOpinionMember</xbrldi:explicitMember>
+        <xbrldi:explicitMember dimension="gaap:PremiseAxis">gaap:ActualMember</xbrldi:explicitMember>
+        <xbrldi:explicitMember dimension="gaap:ReportDateAxis">gaap:ReportedAsOfMarch182008Member</xbrldi:explicitMember>
+      </segment>
+    </entity>
+    <period><instant>2007-12-31</instant></period>
+  </context>
+
+  <context id='D-2007'>
+    <entity>
+      <identifier scheme='http://www.sec.gov/CIK'>1234567890</identifier>
+      <segment>
+        <xbrldi:explicitMember dimension="gaap:EntityAxis">gaap:ABCCompanyDomain</xbrldi:explicitMember>
+        <xbrldi:explicitMember dimension="gaap:BusinessSegmentAxis">gaap:ConsolidatedGroupDomain</xbrldi:explicitMember>
+        <xbrldi:explicitMember dimension="gaap:PremiseAxis">gaap:ActualMember</xbrldi:explicitMember>
+      </segment>
+    </entity>
+    <period><startDate>2007-01-01</startDate><endDate>2007-12-31</endDate></period>
+  </context>
+
+  <context id='D-2007-CSA'>
+    <entity>
+      <identifier scheme='http://www.sec.gov/CIK'>1234567890</identifier>
+      <segment>
+        <xbrldi:explicitMember dimension="gaap:EntityAxis">gaap:ABCCompanyDomain</xbrldi:explicitMember>
+        <xbrldi:explicitMember dimension="gaap:ClassOfCommonStockDescriptionAxis">gaap:ClassACommonStockMember</xbrldi:explicitMember>
+        <xbrldi:explicitMember dimension="gaap:PremiseAxis">gaap:ActualMember</xbrldi:explicitMember>
+      </segment>
+    </entity>
+    <period><startDate>2007-01-01</startDate><endDate>2007-12-31</endDate></period>
+  </context>
+
+  <unit id='USD'><measure>iso4217:USD</measure></unit>
+  <unit id='shares'><measure>xbrli:shares</measure></unit>
+  <unit id='USD-per-share'>
+    <divide>
+      <unitNumerator><measure>iso4217:USD</measure></unitNumerator>
+      <unitDenominator><measure>xbrli:shares</measure></unitDenominator>
+    </divide>
+  </unit>
+
+  <gaap:Assets contextRef='I-2007' unitRef='USD' decimals='-3'>850000000</gaap:Assets>
+  <gaap:Liabilities contextRef='I-2007' unitRef='USD' decimals='-3'>310000000</gaap:Liabilities>
+  <gaap:Revenues contextRef='D-2007' unitRef='USD' decimals='-3'>625000000</gaap:Revenues>
+  <gaap:NetIncomeLoss contextRef='D-2007' unitRef='USD' decimals='-3'>42000000</gaap:NetIncomeLoss>
+  <gaap:CommonStockSharesOutstanding contextRef='D-2007-CSA' unitRef='shares' decimals='0'>12500000</gaap:CommonStockSharesOutstanding>
+  <gaap:EarningsPerShareBasic contextRef='D-2007' unitRef='USD-per-share' decimals='2'>3.36</gaap:EarningsPerShareBasic>
+</xbrl>

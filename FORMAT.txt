@@ -1,0 +1,68 @@
+CCSDS Space Packet Protocol
+===========================
+
+Purpose
+-------
+CCSDS Space Packets are a compact binary framing protocol used by spacecraft missions. GOES-R Level 0 products provide a concrete public follower: NOAA stores instrument and spacecraft CCSDS packets inside netCDF-4 byte arrays.
+
+Primary header
+--------------
+The CCSDS Space Packet primary header is exactly 6 octets / 48 bits and contains:
+- Packet Version Number: 3 bits;
+- Packet Type: 1 bit;
+- Secondary Header Flag: 1 bit;
+- APID: 11 bits;
+- Sequence Flags: 2 bits;
+- Packet Sequence Count or Packet Name: 14 bits;
+- Packet Data Length: 16 bits.
+
+For the current Space Packet protocol the version field is binary `000`.
+
+The Packet Data Length field contains `C`, where:
+
+    C = number_of_octets_in_packet_data_field - 1
+
+Therefore the actual data-field length is `C + 1`, not `C`.
+
+The primary header is followed by a mandatory packet data field of 1..65536 octets, so a complete Space Packet is 7..65542 octets under the base standard.
+
+APID
+----
+The 11-bit Application Process Identifier identifies the managed data path within its naming domain. APID 2047 / all ones is reserved for idle packets.
+
+Do not treat APID as globally identifying a payload format. Mission-specific documentation determines the meaning of an APID.
+
+Secondary header
+----------------
+The one-bit flag announces whether a packet secondary header is present. The base CCSDS protocol does not impose one universal secondary-header payload layout: its contents are managed/mission specific within the allowed framework.
+
+Parser pressure points
+----------------------
+- fields cross byte boundaries and have non-host integer widths;
+- the six-byte primary header must be available before any field is read;
+- version bits must be checked before interpreting the rest as this protocol version;
+- encoded data length is one less than the actual byte count;
+- total packet bounds must be checked before handing out a packet payload slice;
+- the APID narrows mission meaning but does not by itself define a universal payload type;
+- sequence count is 14-bit state and wraps;
+- secondary-header presence is a bit-level fact but secondary-header layout is mission specific;
+- a packet stream parser needs to distinguish truncated header, truncated data field, illegal version, and valid-but-unknown APID.
+
+Typed-parser questions to preserve
+----------------------------------
+- Can a validated packet carry a payload slice whose length is guaranteed to equal the decoded length field plus one?
+- Can 11-bit APID and 14-bit sequence count be represented without accepting impossible out-of-range constructors?
+- Can version validation refine raw six bytes into a `space_packet_header` value?
+- Can secondary-header presence refine the packet into variants without pretending to know the mission-specific secondary-header schema?
+- Can GOES APID dispatch live above this parser and refine only the packets whose mission identity is known?
+
+Useful progression
+------------------
+1. require six bytes and decode all primary-header bit fields;
+2. reject a nonzero packet version for this protocol parser;
+3. compute and bounds-check `data_length + 1`;
+4. return one bounded packet payload slice;
+5. iterate a concatenated packet stream safely;
+6. preserve APID and sequence information;
+7. add a GOES-specific dispatch layer separately;
+8. test truncation at every byte boundary around the six-byte header and declared payload length.

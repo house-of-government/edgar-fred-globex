@@ -1,0 +1,32 @@
+GEOJSON SOURCES
+===============
+
+Specification
+-------------
+RFC 7946, The GeoJSON Format:
+https://www.rfc-editor.org/rfc/rfc7946
+
+GDAL GeoJSON driver documentation:
+https://gdal.org/en/stable/drivers/vector/geojson.html
+
+USGS earthquake GeoJSON feed documentation:
+https://earthquake.usgs.gov/earthquakes/feed/v1.0/geojson.php
+
+Samples
+-------
+sample-earthquakes.geojson
+  Selected real USGS earthquake records from the archived `iTowns/iTowns2-sample-data` GeoJSON dataset.
+  Upstream commit: c015c354e19d21ff56ae5b3149f127122a9917f8
+  Path: geojson/Earthquakes_3857.geojson
+  The upstream dataset reprojects USGS point coordinates to EPSG:3857 and retains the older GeoJSON `crs` member, making it useful as a legacy/interoperability specimen.
+
+sample-polygon.geojson
+  Source: OSGeo/gdal
+  Commit: d6fd56f52d904c605fb1cc493bfd40fc976e7c0b
+  Path: doc/data/polygon.geojson
+  Blob SHA: 76329d16d203320cb64fba378abea40483963361
+  Simple polygon ring with explicit closure and CRS84 legacy `crs` metadata.
+
+Larger available stress input
+-----------------------------
+`muxlab/map-effects-100/data/earthquakes.geojson` is an archived USGS magnitude-4.5+ monthly feed containing hundreds of features. Link it when a large FeatureCollection stress case is useful rather than making the first branch fixture unnecessarily large.

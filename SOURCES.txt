@@ -1,0 +1,35 @@
+FASTQ SOURCES
+=============
+
+Reference documentation
+-----------------------
+NCBI Sequence Read Archive / sequencing data documentation:
+https://www.ncbi.nlm.nih.gov/sra/docs/
+
+Biopython SeqIO quality/FASTQ implementation and test corpus:
+https://github.com/biopython/biopython
+
+Samples
+-------
+sample-small.fastq
+  Source: biopython/biopython, Tests/Quality/example.fastq
+  Source blob SHA: fc86a1eb547c29cb82e866485765e857bb63c113
+  Three ordinary short records.
+
+sample-complex.fastq
+  Source: biopython/biopython, Tests/Quality/wrapping_original_sanger.fastq
+  Source blob SHA: d12d6f659fcf8cd33d76e144eb7902a75eeff639
+  Three longer reads with wrapped quality payloads; useful for proving that punctuation such as `@`/`+` in non-header state is not misclassified.
+
+Available adjacent stress cases in the Biopython corpus
+-------------------------------------------------------
+- `tricky.fastq`
+- zero-length records
+- truncated title/sequence/plus/quality cases
+- too-short and too-long quality strings
+- invalid quality-control characters
+- CRLF/DOS files
+- Illumina/Solexa/Sanger full-range encoding examples
+- long-read fixtures around 8-9 KiB
+
+Those are intentionally not all mirrored yet; this branch first keeps one normal and one structurally awkward valid specimen.

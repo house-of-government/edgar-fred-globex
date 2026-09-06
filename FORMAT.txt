@@ -1,0 +1,73 @@
+Sentinel-2 SAFE
+===============
+
+Purpose
+-------
+Sentinel-2 SAFE is a good integration target because the "file" a user thinks of as one satellite product is actually a directory-level object joining XML metadata, schemas, quality information and multiple JPEG 2000 image assets.
+
+Product shape
+-------------
+Sentinel-2 Level-1C and Level-2A user products are distributed in Sentinel-SAFE form. A product can include:
+- root product metadata in XML;
+- `manifest.safe`, also XML;
+- `GRANULE/` content for image tiles/granules;
+- JPEG 2000 measurement/image files;
+- quality masks/reports and other quality indicators;
+- `DATASTRIP/` metadata;
+- `AUX_DATA/` auxiliary data;
+- `rep_info/` XSD schemas describing product components;
+- INSPIRE metadata XML;
+- presentation/preview material depending on product generation/version.
+
+Parser architecture
+-------------------
+Treat SAFE as a product graph rather than concatenated files:
+
+    SAFE directory
+       -> manifest + product XML
+       -> declared component identities/paths
+       -> granule/tile metadata
+       -> band/resolution assets
+       -> JP2 structural parser
+       -> optional pixel decoder
+
+XML owns descriptive metadata and relationships. JPEG 2000 owns image-container/codestream structure. The SAFE layer should validate that the pieces describe one coherent product.
+
+Interesting product-level invariants
+------------------------------------
+- every required referenced component should exist exactly where the metadata says it does;
+- product processing level should constrain which metadata/assets are expected;
+- granule/tile identifiers in metadata and paths should agree;
+- band identity and spatial resolution should not be interchangeable free-form strings;
+- image dimensions/resolution declared by metadata should be checkable against JP2 metadata;
+- timestamps, coordinate-reference information and footprint metadata have domain-specific meaning and should be decoded separately from generic XML;
+- schema/product versions should be explicit so one parser cannot silently interpret a later schema as an earlier one.
+
+Parser pressure points
+----------------------
+- the parse target is a directory tree, not one byte stream;
+- XML namespaces and schema versions matter;
+- manifests and metadata create cross-file references;
+- some validation requires opening a referenced child asset and comparing facts across formats;
+- a missing file is different from malformed XML and different again from a malformed JP2;
+- product validity should preserve which layer failed;
+- large image payloads should not need to be read merely to validate the product graph.
+
+Typed-parser questions to preserve
+----------------------------------
+- Can a parsed SAFE product contain only references that have been resolved to existing product components?
+- Can Level-1C and Level-2A become explicit variants with different required contents?
+- Can band and resolution indexes prevent accidental comparison of unlike raster arrays?
+- Can the type of a validated image asset record that SAFE metadata and JP2 dimensions have been cross-checked?
+- Can failure retain the exact layer: directory, XML, schema/version, cross-reference, JP2, or pixels?
+
+Useful progression
+------------------
+1. inventory a SAFE directory without parsing image bytes;
+2. parse `manifest.safe` and root product metadata;
+3. enumerate granules/tiles and referenced assets;
+4. check path/reference closure;
+5. decode band and resolution identities into explicit variants;
+6. parse one JP2 header and cross-check dimensions;
+7. validate one complete tile/granule graph;
+8. only then add physical calculations such as RGB composition or vegetation indices.

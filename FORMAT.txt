@@ -1,0 +1,69 @@
+HDF4
+====
+
+Purpose
+-------
+HDF4 is a legacy multi-object scientific container still important because large NASA Earth-observation archives, especially MODIS/HDF-EOS2 products, use it. HDF4 and HDF5 are different on-disk formats; an HDF5 parser does not parse HDF4.
+
+Identification
+--------------
+HDF4 files begin with the four-byte signature:
+
+    0E 03 13 01
+
+Core disk organization
+----------------------
+The low-level format is organized around data descriptors and data elements.
+
+A data descriptor identifies an object with:
+- a 16-bit tag;
+- a 16-bit reference number;
+- a 32-bit data offset;
+- a 32-bit data length.
+
+The pair `(tag, reference)` identifies the object. Data descriptors are stored in linked data-descriptor blocks. Each block begins with a descriptor count and the offset of the next block; the final block points to zero.
+
+Higher-level object families
+----------------------------
+HDF4 libraries build richer structures from those tagged objects, including:
+- scientific data sets / multidimensional arrays;
+- Vgroups;
+- Vdata/table-like records;
+- raster images and palettes;
+- annotations and attributes.
+
+This matters for a parser design: the first useful layer can safely enumerate descriptor objects before attempting to reconstruct every high-level API abstraction.
+
+Parser pressure points
+----------------------
+- tag/reference is an identity mechanism rather than a simple sequential index;
+- descriptor blocks form a linked structure;
+- object interpretation depends on tag class;
+- offsets and lengths must be bounds checked before following them;
+- 32-bit signed offset/length constraints are part of the legacy format;
+- high-level objects can be assembled from multiple lower-level tagged objects;
+- dimensions, numeric types and attributes need to remain consistent across references;
+- unknown tags need a recoverable representation instead of breaking traversal;
+- HDF-EOS semantics are a separate layer and should not be hard-coded into the HDF4 reader.
+
+Why this is interesting for typed parsing
+----------------------------------------
+HDF4 naturally separates:
+1. bytes known only to be an HDF4 file;
+2. validated descriptor blocks;
+3. validated tag/reference object identities;
+4. reconstructed scientific objects;
+5. HDF-EOS Earth-coordinate semantics.
+
+Each transition has invariants that can potentially be represented by types rather than comments.
+
+Useful progression
+------------------
+1. verify the four-byte signature;
+2. parse the first descriptor-block header;
+3. enumerate descriptor `(tag, reference, offset, length)` tuples;
+4. reject out-of-file offsets and lengths;
+5. follow the descriptor-block chain;
+6. decode one simple scientific dataset;
+7. reconstruct one Vgroup/Vdata relationship;
+8. only then add HDF-EOS Grid/Swath semantics.

@@ -1,0 +1,63 @@
+HDF-EOS
+=======
+
+Purpose
+-------
+HDF-EOS adds Earth-science conventions and geolocation structures on top of HDF. It is useful precisely because a generic HDF reader can expose objects while still failing to understand where those observations are on Earth.
+
+Families
+--------
+- HDF-EOS2 is built on HDF4 and is heavily used by Terra/Aqua-era products including MODIS.
+- HDF-EOS5 is built on HDF5 and maps its higher-level structures into HDF5 objects.
+
+Logical geospatial structures
+-----------------------------
+The central data models are:
+- Grid — data on a regular projected grid;
+- Swath — observations arranged along/cross an instrument track with geolocation relationships;
+- Point — irregularly located observations;
+- HDF-EOS5 also defines a Zonal Average structure.
+
+The file can also contain ECS/core/archive metadata. HDF-EOS metadata such as structural metadata describes how logical Earth-science fields map onto the underlying HDF objects.
+
+Important separation
+--------------------
+A useful parser architecture is:
+
+    bytes
+      -> HDF4 or HDF5 structure
+      -> named datasets/attributes/groups
+      -> HDF-EOS structural metadata
+      -> Grid / Swath / Point
+      -> coordinates, projection and physical observations
+
+The HDF layer owns object storage. HDF-EOS owns Earth-science meaning.
+
+Parser pressure points
+----------------------
+- the same logical HDF-EOS ideas live on two incompatible underlying containers;
+- structural metadata describes relationships rather than merely holding scalar values;
+- Grid and Swath require different coordinate reasoning;
+- Swath geolocation can involve dimension maps rather than a one-to-one latitude/longitude array of identical shape;
+- projection parameters and coordinate systems need explicit variants rather than one generic number list;
+- science fields, geolocation fields and metadata need distinct roles;
+- product-specific conventions sit above HDF-EOS and should not leak into the generic HDF-EOS layer;
+- array dimensions and geolocation relationships are excellent candidates for invariants checked before data are exposed as usable observations.
+
+Typed-parser questions to preserve
+----------------------------------
+- Can a parsed Grid value guarantee that its declared dimensions agree with its science fields?
+- Can a Swath distinguish geolocation dimensions from data dimensions without strings everywhere?
+- Can projection choice determine which projection parameters are legal?
+- Can HDF-EOS2 and HDF-EOS5 share the semantic types while using different container parsers?
+- Can unrecognized metadata survive losslessly without pretending to have known semantics?
+
+Useful progression
+------------------
+1. identify whether the underlying file is HDF4 or HDF5;
+2. locate HDF-EOS structural metadata;
+3. inventory named Grid/Swath/Point structures;
+4. decode dimensions and field names without reading large arrays;
+5. validate one Grid's shape and projection metadata;
+6. validate one Swath's data/geolocation relationships;
+7. expose a small physical observation only after representation and geolocation checks succeed.

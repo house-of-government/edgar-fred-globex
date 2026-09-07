@@ -15,6 +15,10 @@ expect_url() {
 }
 
 expect_url \
+    'https://api.nsf.gov/services/v1/awards.json?keyword=%22non-von+Neumann%22&awardeeStateCode=IN&rpp=25' \
+    search --print-url '"non-von Neumann"' --state IN --rpp 25
+
+expect_url \
     'https://api.nsf.gov/services/v1/awards.json?keyword=%22non-von+Neumann%22&awardeeName=Indiana+University&awardeeStateCode=IN&rpp=25&offset=25' \
     search --print-url '"non-von Neumann"' --awardee 'Indiana University' --state IN --rpp 25 --offset 25
 

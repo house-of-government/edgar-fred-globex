@@ -10,7 +10,7 @@ That makes the award corpus useful both as structured-data material and as evide
 - NSF developer resources: https://www.nsf.gov/digital/developer
 - Award Search API documentation: https://resources.research.gov/common/webapi/awardapisearch-v1.htm
 - Data.gov catalog record: https://catalog.data.gov/dataset/nsf-award-search-web-api
-- Annual/bulk award downloads: https://www.nsf.gov/awardsearch/download.jsp
+- Award downloads: https://www.nsf.gov/awardsearch/download.jsp
 
 The Award Search overview says the searchable database contains NSF-funded projects since 1989. The Data.gov description of the API says its Research.gov award information begins in 2007. Those are not identical coverage claims, so code and analysis should treat coverage as source-specific rather than silently assuming one universal start year.
 
@@ -30,7 +30,7 @@ GET https://api.nsf.gov/services/v1/awards/{id}.{json|xml}
 GET https://api.nsf.gov/services/v1/awards/{id}/projectoutcomes.{json|xml}
 ```
 
-Searches support free-text/Boolean keywords plus structured fields such as investigator, awardee organization/location, program, dates, program officer, award status, and award number. The API paginates with `rpp` and `offset`; `rpp` is limited to 25 and search display is capped at 3,000 results, so broad corpus work should refine queries or use the bulk annual XML downloads instead of pretending pagination is unbounded.
+Searches support free-text/Boolean keywords plus structured fields such as investigator, awardee organization/location, program, dates, program officer, award status, and award number. The API paginates with `rpp` and `offset`; `rpp` is limited to 25 and search display is capped at 3,000 results, so broad corpus work should refine queries or use bulk award downloads instead of pretending pagination is unbounded.
 
 The API documentation currently says `printFields` is no longer functional. The local CLI therefore preserves the raw response rather than claiming server-side projection.
 
@@ -44,8 +44,11 @@ Examples:
 # Search title/abstract and related indexed award data.
 bin/nsf-awards search 'non-von Neumann'
 
+# Search the whole state before narrowing to the remembered institution.
+bin/nsf-awards search '"non-von Neumann"' --state IN
+
 # Narrow the remembered Bloomington/Indiana lead.
-bin/nsf-awards search 'non-von Neumann' \
+bin/nsf-awards search '"non-von Neumann"' \
   --awardee 'Indiana University' \
   --state IN
 
@@ -68,6 +71,8 @@ bin/nsf-awards search quantum --param 'progRefCode=7556'
 
 `NSF_API_BASE` can override the base URL for testing or a future endpoint move. `NSF_API_TIMEOUT` controls the request timeout in seconds.
 
+The Indiana non-von-Neumann investigation is recorded in [NSF_INDIANA_NON_VON_NEUMANN.md](NSF_INDIANA_NON_VON_NEUMANN.md). It distinguishes exact-phrase search from a broader technical classification and records why current evidence does not justify silently identifying NSF Award 1205518 as a CCA award.
+
 ## Questions this corpus can answer
 
 Useful analyses include:
@@ -82,8 +87,10 @@ Useful analyses include:
 
 Those are empirical questions. The award corpus does not prove that a particular graduate program, adviser, or research plan will produce funding, but it gives a much better starting point than treating funding as a problem to discover only after years of training.
 
-## Bulk XML
+## Bulk downloads and frozen samples
 
-For large historical work, use the official Download Awards page. NSF provides zipped XML exports by fiscal year. Those files are better parser fixtures and bulk-analysis inputs than issuing thousands of API calls.
+Do not assume the bulk-download representation is permanently XML. NSF's Award Search overview still describes zipped XML exports, while the Download Awards metadata reports that NSF converted downloadable award files from XML to JSON in January 2025. Treat the bulk format itself as retrieval-time provenance rather than a timeless interface. The Download Awards page can also temporarily have no export files available.
 
-A later sample branch should freeze a small number of representative award XML records with exact source URLs, retrieval dates, hashes, and selection reasons. Prefer records with nontrivial abstracts/program metadata and at least one case that exercises project outcomes, rather than inventing toy awards.
+For large historical work, prefer the official Download Awards page when its exports are available rather than issuing thousands of API calls. For parser and acceptance work, freeze a small number of representative records with exact source URLs, retrieval dates, response format, hashes, and selection reasons. Prefer records with nontrivial abstracts/program metadata and at least one case that exercises project outcomes rather than inventing toy awards.
+
+A frozen API response may be tested offline. Repository CI should not require live access to `api.nsf.gov` merely to prove that a search still returns the same records.

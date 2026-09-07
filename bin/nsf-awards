@@ -1,0 +1,234 @@
+#!/usr/bin/env python3
+
+from __future__ import annotations
+
+import argparse
+import os
+import sys
+from urllib.error import HTTPError, URLError
+from urllib.parse import urlencode
+from urllib.request import Request, urlopen
+
+DEFAULT_BASE = "https://api.nsf.gov/services/v1"
+
+
+def award_id(value: str) -> str:
+    if not value.isdigit():
+        raise argparse.ArgumentTypeError("award id must contain only decimal digits")
+    return value
+
+
+def results_per_page(value: str) -> int:
+    number = int(value)
+    if not 1 <= number <= 25:
+        raise argparse.ArgumentTypeError("rpp must be between 1 and 25")
+    return number
+
+
+def nonnegative_integer(value: str) -> int:
+    number = int(value)
+    if number < 0:
+        raise argparse.ArgumentTypeError("value must be nonnegative")
+    return number
+
+
+def common_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(add_help=False)
+    parser.add_argument(
+        "--format",
+        choices=("json", "xml"),
+        default="json",
+        help="response format (default: json)",
+    )
+    parser.add_argument(
+        "--print-url",
+        action="store_true",
+        help="print the exact request URL without contacting NSF",
+    )
+    return parser
+
+
+def parse_arguments(argv: list[str]) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        prog="nsf-awards",
+        description="Search the public NSF awards API and write the raw response to stdout.",
+    )
+    common = common_parser()
+    commands = parser.add_subparsers(dest="command", required=True)
+
+    search = commands.add_parser("search", parents=[common], help="search awards")
+    search.add_argument(
+        "keyword",
+        nargs="*",
+        help="free-text/Boolean search terms; multiple words are joined with spaces",
+    )
+    search.add_argument("--awardee", help="awardee organization name")
+    search.add_argument("--state", help="awardee state code, e.g. IN or MI")
+    search.add_argument("--pi-first", help="principal investigator first name")
+    search.add_argument("--pi-last", help="principal investigator last name")
+    search.add_argument("--program", help="funding program name")
+    search.add_argument("--program-officer", help="program officer name")
+    search.add_argument("--award-date-from", help="award date lower bound, MM/DD/YYYY")
+    search.add_argument("--award-date-to", help="award date upper bound, MM/DD/YYYY")
+    search.add_argument("--start-from", help="project start-date lower bound, MM/DD/YYYY")
+    search.add_argument("--start-to", help="project start-date upper bound, MM/DD/YYYY")
+    search.add_argument("--active", action="store_true", help="request active awards")
+    search.add_argument("--expired", action="store_true", help="request expired awards")
+    search.add_argument("--rpp", type=results_per_page, help="results per page, 1..25")
+    search.add_argument("--offset", type=nonnegative_integer, help="record offset")
+    search.add_argument(
+        "--sort",
+        choices=(
+            "awardNumber",
+            "awardTitle",
+            "nsfOrganization",
+            "startDate",
+            "principalInvestigator",
+            "organization",
+            "state",
+            "programOfficer",
+        ),
+        help="documented NSF sort key",
+    )
+    search.add_argument(
+        "--param",
+        action="append",
+        default=[],
+        metavar="NAME=VALUE",
+        help="pass another documented NSF API query parameter; may be repeated",
+    )
+
+    award = commands.add_parser("award", parents=[common], help="fetch one award by id")
+    award.add_argument("id", type=award_id)
+
+    outcomes = commands.add_parser(
+        "outcomes",
+        parents=[common],
+        help="fetch the public project-outcomes report for one award",
+    )
+    outcomes.add_argument("id", type=award_id)
+
+    return parser.parse_args(argv)
+
+
+def extra_parameters(values: list[str]) -> list[tuple[str, str]]:
+    result: list[tuple[str, str]] = []
+    for item in values:
+        if "=" not in item:
+            raise ValueError(f"--param requires NAME=VALUE, got {item!r}")
+        name, value = item.split("=", 1)
+        if not name:
+            raise ValueError("--param name may not be empty")
+        result.append((name, value))
+    return result
+
+
+def search_parameters(args: argparse.Namespace) -> list[tuple[str, str]]:
+    params: dict[str, str] = {}
+
+    if args.keyword:
+        params["keyword"] = " ".join(args.keyword)
+
+    convenience = (
+        ("awardeeName", args.awardee),
+        ("awardeeStateCode", args.state),
+        ("piFirstName", args.pi_first),
+        ("piLastName", args.pi_last),
+        ("fundProgramName", args.program),
+        ("poName", args.program_officer),
+        ("dateStart", args.award_date_from),
+        ("dateEnd", args.award_date_to),
+        ("startDateStart", args.start_from),
+        ("startDateEnd", args.start_to),
+    )
+    for name, value in convenience:
+        if value is not None:
+            params[name] = value
+
+    if args.active:
+        params["ActiveAwards"] = "True"
+    if args.expired:
+        params["ExpiredAwards"] = "True"
+    if args.rpp is not None:
+        params["rpp"] = str(args.rpp)
+    if args.offset is not None:
+        params["offset"] = str(args.offset)
+    if args.sort is not None:
+        params["sortKey"] = args.sort
+
+    for name, value in extra_parameters(args.param):
+        params[name] = value
+
+    return list(params.items())
+
+
+def request_url(args: argparse.Namespace) -> str:
+    base = os.environ.get("NSF_API_BASE", DEFAULT_BASE).rstrip("/")
+
+    if args.command == "search":
+        path = f"awards.{args.format}"
+        params = search_parameters(args)
+    elif args.command == "award":
+        path = f"awards/{args.id}.{args.format}"
+        params = []
+    elif args.command == "outcomes":
+        path = f"awards/{args.id}/projectoutcomes.{args.format}"
+        params = []
+    else:
+        raise AssertionError(f"unknown command: {args.command}")
+
+    url = f"{base}/{path}"
+    if params:
+        url += "?" + urlencode(params)
+    return url
+
+
+def timeout_seconds() -> float:
+    raw = os.environ.get("NSF_API_TIMEOUT", "30")
+    try:
+        timeout = float(raw)
+    except ValueError as exc:
+        raise ValueError(f"NSF_API_TIMEOUT must be numeric, got {raw!r}") from exc
+    if timeout <= 0:
+        raise ValueError("NSF_API_TIMEOUT must be greater than zero")
+    return timeout
+
+
+def fetch(url: str) -> int:
+    request = Request(url, headers={"User-Agent": "edgar-fred-globex/nsf-awards"})
+    try:
+        with urlopen(request, timeout=timeout_seconds()) as response:
+            while True:
+                chunk = response.read(65536)
+                if not chunk:
+                    break
+                sys.stdout.buffer.write(chunk)
+        return 0
+    except HTTPError as exc:
+        print(f"NSF API returned HTTP {exc.code}: {url}", file=sys.stderr)
+        body = exc.read()
+        if body:
+            sys.stderr.buffer.write(body)
+            if not body.endswith(b"\n"):
+                sys.stderr.buffer.write(b"\n")
+        return 1
+    except URLError as exc:
+        print(f"NSF API request failed: {exc.reason}", file=sys.stderr)
+        return 1
+
+
+def main(argv: list[str]) -> int:
+    try:
+        args = parse_arguments(argv)
+        url = request_url(args)
+        if args.print_url:
+            print(url)
+            return 0
+        return fetch(url)
+    except (ValueError, OSError) as exc:
+        print(f"nsf-awards: {exc}", file=sys.stderr)
+        return 2
+
+
+if __name__ == "__main__":
+    raise SystemExit(main(sys.argv[1:]))

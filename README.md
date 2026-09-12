@@ -14,6 +14,15 @@ The immediate use is to find interesting, understandable structured data for exp
 - [S&P Global](SP_GLOBAL.md) — commercial economic data; IDDS can deliver XML or CSV feeds.
 - [Joint Committee on Taxation](JCT.md) — congressional tax-analysis publications with a public Publications XML archive.
 
+## Frozen fixtures
+
+[`fixtures/`](fixtures/) now contains exact parser specimens with source, checksum, documentation, and redistribution provenance. It also keeps a link-only matrix for sources where public availability is not treated as permission to mirror the payload.
+
+Current mirrored specimens:
+
+- EDGAR extracted XBRL: a real Apple 2026-07-30 8-K instance with eight contexts and explicit dimension members.
+- Generic SBE: Aeron's pinned Apache-2.0 example schema plus its included common types, covering composites, enums, sets, constants, nested repeating groups, and variable data.
+
 ## XML/control-flow interest
 
 A useful progression is not “minimal compiler acceptance tests,” but increasingly interesting real data:

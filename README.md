@@ -1,6 +1,6 @@
 # edgar-fred-globex
 
-Notes and small examples from real financial, economic, tax, and market-structure data sources.
+Notes and small examples from real financial, economic, tax, research-funding, and market-structure data sources.
 
 The immediate use is to find interesting, understandable structured data for experimenting with parsing, looping, comparisons, conditional branching, and dispatch. This repository is the notebook/data side of that work. It is **not** permission to independently push the ARM Thumb compiler forward; compiler design and acceptance work should be done with the user actively involved.
 
@@ -13,6 +13,11 @@ The immediate use is to find interesting, understandable structured data for exp
 - [CRSP](CRSP.md) — historical securities data; current documented delivery is primarily flat files (ASCII/SAS/R), so useful data but not the first XML target.
 - [S&P Global](SP_GLOBAL.md) — commercial economic data; IDDS can deliver XML or CSV feeds.
 - [Joint Committee on Taxation](JCT.md) — congressional tax-analysis publications with a public Publications XML archive.
+- [NSF awards](NSF.md) — funded research projects; public Award Search API returns JSON/XML and NSF also publishes annual bulk XML. Useful for asking what work actually gets funded, by which programs, investigators, institutions, and award sizes.
+
+## Command-line source access
+
+`bin/nsf-awards` provides a small raw-output wrapper around the NSF Award Search API. It keeps JSON/XML on stdout so the data can feed later parsing and analysis rather than burying the source behind an application-specific database.
 
 ## Frozen fixtures
 
@@ -31,5 +36,6 @@ A useful progression is not “minimal compiler acceptance tests,” but increas
 2. EDGAR XBRL: namespaces, attributes, contexts, units, financial facts, and linkbases.
 3. Globex SBE schema: messages, fields, composites, repeating groups, template IDs, and versioning — XML that naturally describes later binary dispatch.
 4. JCT/S&P Global where the subject matter itself suggests economically meaningful filtering and aggregation.
+5. NSF award XML: investigators, institutions, programs, dates, amounts, abstracts, and project outcomes — structured data tied directly to the practical question of what scientific work gets funded.
 
 MIDAS and CRSP belong in the same notebook because they are economically/financially interesting comparison sources even when XML is not their natural transport.
